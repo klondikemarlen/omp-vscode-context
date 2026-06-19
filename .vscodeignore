@@ -1,0 +1,7 @@
+src/
+test/
+esbuild.js
+tsconfig.json
+node_modules/
+.gitignore
+.git/

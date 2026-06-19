@@ -1,0 +1,93 @@
+{
+  "name": "omp-vscode-context",
+  "displayName": "OMP VS Code Context",
+  "description": "Send the current VS Code file or selection to Oh My Pi with Ctrl+Alt+K.",
+  "version": "0.1.0",
+  "publisher": "klondikemarlen",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/klondikemarlen/omp-vscode-context.git"
+  },
+  "keywords": [
+    "omp",
+    "oh-my-pi",
+    "vscode",
+    "context",
+    "selection"
+  ],
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:ompContext.insertEditorContext"
+  ],
+  "main": "./dist/extension.cjs",
+  "files": [
+    "dist",
+    "omp",
+    "README.md",
+    "CONCEPTS.md",
+    "LICENSE"
+  ],
+  "omp": {
+    "extensions": [
+      "./omp/index.js"
+    ]
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "ompContext.insertEditorContext",
+        "title": "OMP Context: Insert Editor Context"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "ompContext.insertEditorContext",
+        "key": "cmd+alt+k",
+        "mac": "cmd+alt+k",
+        "win": "ctrl+alt+k",
+        "linux": "ctrl+alt+k",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "OMP VS Code Context",
+      "properties": {
+        "ompContext.endpoint": {
+          "type": "string",
+          "default": "",
+          "description": "Override the OMP context bridge endpoint. Empty means read ~/.omp/agent/editor-context-bridge.json, then fall back to http://127.0.0.1:47687."
+        },
+        "ompContext.delivery": {
+          "type": "string",
+          "enum": [
+            "paste",
+            "send",
+            "nextTurn"
+          ],
+          "default": "paste",
+          "description": "How OMP should receive editor context: paste into the prompt editor, send immediately, or queue for the next turn."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "compile": "npm run check-types && node esbuild.js",
+    "package": "npm run check-types && node esbuild.js --production",
+    "test": "npm run check-types && node --import tsx --test test/*.test.ts test/*.test.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "@types/vscode": "^1.94.0",
+    "esbuild": "^0.25.3",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}
