@@ -36,13 +36,13 @@ test("buildReference collapses a single cursor position", () => {
 test("formatContextPrompt defaults to a file reference for selected code", () => {
   const prompt = formatContextPrompt(editorContext({}))
 
-  assert.equal(prompt, "In @src/example.ts#L7C17-L9C20 ")
+  assert.equal(prompt, "@src/example.ts#L7C17-L9C20 ")
 })
 
 test("formatContextPrompt includes selected code in inline mode", () => {
   const prompt = formatContextPrompt(editorContext({}), "inline")
 
-  assert.equal(prompt, "In @src/example.ts#L7C17-L9C20 \n\n```typescript\nconst value = 1\nreturn value\n```")
+  assert.equal(prompt, "@src/example.ts#L7C17-L9C20 \n\n```typescript\nconst value = 1\nreturn value\n```")
 })
 
 test("formatContextPrompt lengthens fence when selection contains backticks", () => {
@@ -56,7 +56,7 @@ test("formatContextPrompt lengthens fence when selection contains backticks", ()
     languageId: "markdown",
   }), "inline")
 
-  assert.equal(prompt, "In @README.md#L1C1-L3C3 \n\n````markdown\n```ts\nconst value = 1\n```\n````")
+  assert.equal(prompt, "@README.md#L1C1-L3C3 \n\n````markdown\n```ts\nconst value = 1\n```\n````")
 })
 
 test("formatContextPrompt emits a trailing space for cursor references", () => {
@@ -68,5 +68,5 @@ test("formatContextPrompt emits a trailing space for cursor references", () => {
     selectedText: "",
   }))
 
-  assert.equal(prompt, "In @src/example.ts#L3C8 ")
+  assert.equal(prompt, "@src/example.ts#L3C8 ")
 })

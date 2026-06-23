@@ -1,8 +1,13 @@
 # Changelog
 
+## 1.0.0
+
+- Remove the leading `In` from inserted context references.
+- Reduce routine success notifications from VS Code and the OMP bridge.
+
 ## 0.1.6
 
-- Correct OMP GitHub plugin update instructions to use `bun update`.
+- Update VS Code and OMP install instructions; re-running `omp plugin install` now refreshes existing GitHub plugins.
 
 ## 0.1.5
 

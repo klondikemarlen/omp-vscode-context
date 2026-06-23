@@ -60,7 +60,6 @@ async function insertEditorContext() {
 
   try {
     await postContext(bridgeState, bridgeRequest)
-    await vscode.window.showInformationMessage(`Sent ${bridgeRequest.reference} to OMP.`)
   } catch (error) {
     await vscode.env.clipboard.writeText(prompt)
     const message = error instanceof Error ? error.message : "Unknown bridge error"

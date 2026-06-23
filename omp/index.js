@@ -81,7 +81,6 @@ async function ensureServer(pi, ctx) {
       serverPort = port
       serverEndpoint = `http://${HOST}:${port}`
       await writeStateFile()
-      ctx.ui.notify(`VS Code Context Bridge ${packageVersion} listening on ${serverEndpoint}.`, "info")
       return
     } catch (error) {
       candidateServer.close()
@@ -206,19 +205,16 @@ function isContextRequest(value) {
 async function deliverContext(pi, body) {
   if (body.delivery === "send") {
     await pi.sendUserMessage(body.prompt, { deliverAs: "steer" })
-    activeContext?.ui?.notify?.("Sent VS Code context to OMP.", "info")
     return
   }
 
   if (body.delivery === "nextTurn") {
     await pi.sendUserMessage(body.prompt, { deliverAs: "nextTurn" })
-    activeContext?.ui?.notify?.("Queued VS Code context for the next OMP turn.", "info")
     return
   }
 
   if (activeContext?.hasUI && typeof activeContext.ui?.pasteToEditor === "function") {
     await activeContext.ui.pasteToEditor(body.prompt)
-    activeContext.ui.notify?.("Inserted VS Code context into the OMP prompt.", "info")
     return
   }
 
@@ -231,7 +227,6 @@ async function claimActiveBridge(ctx) {
   }
 
   await writeStateFile()
-  ctx.ui.notify?.(`VS Code Ctrl+Alt+K now targets this OMP terminal (${serverEndpoint}).`, "info")
 }
 
 async function writeStateFile() {

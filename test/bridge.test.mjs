@@ -47,7 +47,7 @@ test("OMP bridge accepts authorized context and pastes into editor", async () =>
 
     const stateFile = path.join(homeDirectory, ".omp", "agent", "editor-context-bridge.json")
     const state = JSON.parse(await fs.readFile(stateFile, "utf8"))
-    assert.equal(state.version, "0.1.6")
+    assert.equal(state.version, "1.0.0")
     assert.equal(typeof state.instanceId, "string")
     assert.equal(commands.has("vscode-context-here"), true)
     assert.equal(commands.has("vscode-context-status"), true)
@@ -59,12 +59,12 @@ test("OMP bridge accepts authorized context and pastes into editor", async () =>
       },
       body: JSON.stringify({
         delivery: "paste",
-        prompt: "In @src/example.ts#L1C1 ",
+        prompt: "@src/example.ts#L1C1 ",
       }),
     })
 
     assert.equal(response.status, 200)
-    assert.deepEqual(pastedPrompts, ["In @src/example.ts#L1C1 "])
+    assert.deepEqual(pastedPrompts, ["@src/example.ts#L1C1 "])
 
     await handlers.get("session_shutdown")()
     await assert.rejects(fs.stat(stateFile))

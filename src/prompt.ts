@@ -28,13 +28,13 @@ export function formatContextPrompt(context: EditorContext, contentMode: Content
   const reference = buildReference(context)
 
   if (contentMode === "reference" || context.selectedText.length === 0) {
-    return `In ${reference} `
+    return `${reference} `
   }
 
   const fence = getCodeFence(context.selectedText)
   const language = normalizeLanguageId(context.languageId)
 
-  return `In ${reference} \n\n${fence}${language}\n${context.selectedText}\n${fence}`
+  return `${reference} \n\n${fence}${language}\n${context.selectedText}\n${fence}`
 }
 
 function normalizeLanguageId(languageId: string) {

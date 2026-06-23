@@ -33,13 +33,13 @@ You need both pieces:
 
 ### VS Code Marketplace
 
-Install from Marketplace:
+Install or update from Marketplace:
 
 ```bash
-code --install-extension klondikemarlen.omp-vscode-context
+code --install-extension klondikemarlen.omp-vscode-context --force
 ```
 
-Or use VS Code's Extensions view and search for **Oh My Pi Context Bridge**.
+Or use VS Code's Extensions view and search for **Oh My Pi Context Bridge**. Marketplace installs normally auto-update with VS Code unless extension auto-update is disabled.
 
 Links:
 
@@ -57,16 +57,15 @@ omp plugin install github:klondikemarlen/omp-vscode-context
 
 `omp install github:klondikemarlen/omp-vscode-context` also works; `omp plugin install` is clearer because this is an OMP plugin, not the VS Code extension.
 
-Update an already-installed GitHub plugin:
+Update an already-installed GitHub plugin with the same command:
 
 ```bash
-cd ~/.omp/plugins
-bun update omp-vscode-context
+omp plugin install github:klondikemarlen/omp-vscode-context
 ```
 
 Then restart OMP or run `/reload-plugins`.
 
-Why this command: OMP records GitHub plugins in `~/.omp/plugins/package.json`, but the exact installed commit is pinned by `~/.omp/plugins/bun.lock`. `omp plugin install github:klondikemarlen/omp-vscode-context` is the normal first install command; `bun update omp-vscode-context` is the reliable update command for moving that pinned GitHub dependency to the latest commit.
+OMP now refreshes GitHub plugin lockfile pins when you re-run `omp plugin install`; the old manual `cd ~/.omp/plugins && bun update omp-vscode-context` workaround is no longer needed.
 
 This plugin is installed from the GitHub repo because it ships an OMP runtime extension, while the VS Code half is installed from Marketplace.
 
