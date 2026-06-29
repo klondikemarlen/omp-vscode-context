@@ -213,12 +213,43 @@ async function deliverContext(pi, body) {
     return
   }
 
-  if (activeContext?.hasUI && typeof activeContext.ui?.pasteToEditor === "function") {
-    await activeContext.ui.pasteToEditor(body.prompt)
+  if (await pasteToPromptEditor(body.prompt)) {
     return
   }
 
   await pi.sendUserMessage(body.prompt, { deliverAs: "nextTurn" })
+}
+
+async function pasteToPromptEditor(prompt) {
+  if (!activeContext?.hasUI) {
+    return false
+  }
+
+  const ui = activeContext.ui
+  const canSetEditorText = typeof ui?.getEditorText === "function"
+    && typeof ui?.setEditorText === "function"
+  const beforePasteText = canSetEditorText ? await ui.getEditorText() : undefined
+
+  if (typeof ui?.pasteToEditor === "function") {
+    await ui.pasteToEditor(prompt)
+
+    if (canSetEditorText) {
+      const editorText = await ui.getEditorText()
+      if (typeof editorText === "string") {
+        const refreshedText = editorText === beforePasteText ? `${editorText}${prompt}` : editorText
+        await ui.setEditorText(refreshedText)
+      }
+    }
+
+    return true
+  }
+
+  if (canSetEditorText) {
+    await ui.setEditorText(`${typeof beforePasteText === "string" ? beforePasteText : ""}${prompt}`)
+    return true
+  }
+
+  return false
 }
 
 async function claimActiveBridge(ctx) {
