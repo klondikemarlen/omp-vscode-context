@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+- Refresh OMP prompt rendering after VS Code context paste.
+- Send only the delivery mode and prompt text over the bridge.
+
 ## 1.0.0
 
 - Remove the leading `In` from inserted context references.
