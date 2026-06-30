@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Wait for delayed OMP prompt paste state before forcing repaint.
+
 ## 1.2.0
 
 - Rename OMP routing commands to `/ide` and `/ide-status`.
