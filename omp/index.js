@@ -10,6 +10,7 @@ const HOST = "127.0.0.1"
 const MAX_PORT_ATTEMPTS = 20
 const MAX_BODY_BYTES = 2 * 1024 * 1024
 const HEALTH_TIMEOUT_MILLISECONDS = 500
+const PASTE_READBACK_TIMEOUT_MILLISECONDS = 100
 const STATE_FILE = join(homedir(), ".omp", "agent", "editor-context-bridge.json")
 const PACKAGE_FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "package.json")
 
@@ -267,8 +268,9 @@ async function refreshPromptEditor(ui, beforePasteText, prompt) {
 }
 
 async function readEditorTextAfterPaste(ui, beforePasteText) {
+  const deadline = Date.now() + PASTE_READBACK_TIMEOUT_MILLISECONDS
   let editorText = await ui.getEditorText()
-  for (let attempt = 0; attempt < 3 && editorText === beforePasteText; attempt += 1) {
+  while (editorText === beforePasteText && Date.now() < deadline) {
     await nextTick()
     editorText = await ui.getEditorText()
   }

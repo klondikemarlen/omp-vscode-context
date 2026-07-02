@@ -102,6 +102,48 @@ test("OMP bridge accepts authorized context and pastes into editor", async () =>
   })
 })
 
+test("OMP bridge waits for slow delayed end-append before forcing repaint", async () => {
+  await withBridge(BASE_PORT + 20, async ({ handlers, stateFile }) => {
+    const prompt = "@src/example.ts#L2C3 "
+    const beforeText = `${"draft ".repeat(500)}tail`
+    let editorText = beforeText
+    let renderedText = beforeText
+    let pasteSettled = false
+
+    await handlers.get("session_start")({}, {
+      hasUI: true,
+      ui: {
+        notify() {},
+        async getEditorText() {
+          return editorText
+        },
+        async setEditorText(value) {
+          editorText = value
+          if (pasteSettled) {
+            renderedText = value
+          }
+        },
+        pasteToEditor(value) {
+          setTimeout(() => {
+            editorText = `${beforeText}${value}`
+            pasteSettled = true
+          }, 25)
+        },
+      },
+    })
+
+    const state = JSON.parse(await fs.readFile(stateFile, "utf8"))
+    const response = await postContext(state, {
+      delivery: "paste",
+      prompt,
+    })
+
+    assert.equal(response.status, 200)
+    assert.equal(editorText, `${beforeText}${prompt}`)
+    assert.equal(renderedText, `${beforeText}${prompt}`)
+  })
+})
+
 test("OMP bridge refreshes prompt text after paste when editor APIs are available", async () => {
   await withBridge(BASE_PORT + 1, async ({ handlers, stateFile }) => {
     const prompt = "@src/example.ts#L2C3 "
