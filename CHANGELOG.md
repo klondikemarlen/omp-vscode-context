@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+
+- Add `selection` content mode for sending only selected text as a fenced code block.
+- Document the issue-to-merge feature workflow.
+
+## 1.2.2
+
+- Improve the prompt repaint workaround for older OMP builds.
+
 ## 1.2.1
 
 - Wait for delayed OMP prompt paste state before forcing repaint.
