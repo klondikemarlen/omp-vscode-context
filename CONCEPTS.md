@@ -10,7 +10,7 @@
 - **Editor facts come from VS Code:** Current file, cursor, selection, selected text, and language id are captured by the VS Code extension only.
 - **Prompt mutation happens in OMP:** OMP owns the live prompt editor, so prompt insertion uses an OMP runtime extension.
 - **Local bridge, not public API:** The HTTP server binds to `127.0.0.1` and requires the token written by the running OMP extension.
-- **Reference first:** Default to character-precise `@file#LxCy-LxCy` references for saved workspace files. OMP can read the current file directly, and the prompt avoids duplicating large selections.
+- **Inline first:** Default to `@file#LxCy-LxCy` plus selected text so OMP receives the exact bytes. Reference-only mode stays available as the compact saved-file optimization.
 
 ## Problem shape
 
@@ -52,10 +52,10 @@ Only `prompt` is sent. VS Code owns editor inspection; OMP only needs the text t
 
 ## Content modes
 
-- `reference`: default. Sends only `@file#LxCy-LxCy `. Best for saved workspace files because OMP can inspect the file and the prompt stays small.
-- `inline`: sends `@file#LxCy-LxCy ` plus a fenced copy of the selected text. Useful for unsaved buffers, generated output, or when the exact selected bytes matter more than file freshness.
+- `inline`: default. Sends `@file#LxCy-LxCy ` plus a fenced copy of the selected text. Safest when the selected bytes matter, or when buffers are unsaved/generated.
+- `reference`: sends only `@file#LxCy-LxCy `. Smaller prompt for saved workspace files because OMP can inspect the file directly.
 
-Avoid using inline mode as the default for large selections unless you want selected text copied into the prompt instead of only referenced.
+Use `reference` for large selections when you prefer a compact prompt over copying selected text into OMP.
 
 
 ## Prompt repaint compatibility
@@ -96,7 +96,7 @@ Multiple OMP terminals can run the plugin at the same time. Each terminal listen
 
 OpenCode documents `Ctrl+Alt+K` / `Cmd+Alt+K` as a file-reference insertion shortcut. Claude Code documents `Alt+K` / `Option+K` as **Insert @-Mention Reference** and also exposes selected text automatically.
 
-This extension chooses OpenCode's chord because the request named `Ctrl+Alt+K`, and it preserves Claude/OpenCode's safer behavior: insert a reference into the prompt, do not auto-submit by default.
+This extension chooses OpenCode's chord because the request named `Ctrl+Alt+K`, and it preserves Claude/OpenCode's safer behavior: insert context into the prompt, do not auto-submit by default.
 
 ## Limits
 

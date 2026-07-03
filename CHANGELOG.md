@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.3
+
+- Make inline context the default so selected text is pasted with the file reference; keep reference mode as the compact optimization.
+
 ## 1.3.2
 
 - Remove the redundant `ompContext.delivery` setting and hidden non-paste bridge delivery paths.

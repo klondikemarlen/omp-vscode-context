@@ -1,7 +1,7 @@
 import test from "node:test"
 import assert from "node:assert/strict"
 
-import { buildReference, formatContextPrompt, type EditorContext } from "../src/prompt"
+import { buildReference, formatContextPrompt, resolveContentMode, type EditorContext } from "../src/prompt"
 
 function editorContext(overrides: Partial<EditorContext>): EditorContext {
   return {
@@ -33,10 +33,17 @@ test("buildReference collapses a single cursor position", () => {
   assert.equal(reference, "@src/example.ts#L7C17")
 })
 
-test("formatContextPrompt defaults to a file reference for selected code", () => {
+test("formatContextPrompt defaults to inline selected code", () => {
   const prompt = formatContextPrompt(editorContext({}))
 
-  assert.equal(prompt, "@src/example.ts#L7C17-L9C20 ")
+  assert.equal(prompt, "@src/example.ts#L7C17-L9C20 \n\n```typescript\nconst value = 1\nreturn value\n```")
+})
+
+test("resolveContentMode keeps reference and defaults invalid values to inline", () => {
+  assert.equal(resolveContentMode("reference"), "reference")
+  assert.equal(resolveContentMode("inline"), "inline")
+  assert.equal(resolveContentMode(undefined), "inline")
+  assert.equal(resolveContentMode("bogus"), "inline")
 })
 
 test("formatContextPrompt includes selected code in inline mode", () => {

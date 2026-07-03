@@ -6,11 +6,16 @@ VS Code extension plus Oh My Pi extension for sending the active editor location
 
 Press `Ctrl+Alt+K` on Linux/Windows or `Cmd+Alt+K` on macOS while a VS Code editor is focused.
 
-With a selection, OMP receives a file reference by default:
+With a selection, OMP receives a file reference plus the exact selected text by default:
 
-```text
+````text
 @src/example.ts#L7C17-L9C20 
+
+```typescript
+const value = 1
+return value
 ```
+````
 
 Without a selection, OMP receives the current file and cursor position:
 
@@ -18,9 +23,7 @@ Without a selection, OMP receives the current file and cursor position:
 @src/example.ts#L7C17 
 ```
 
-The inserted prompt ends with a trailing space so you can keep typing immediately after the reference.
-
-The default is reference-only because OMP can read saved workspace files directly. This avoids pasting large selections into the prompt and avoids OMP's large-paste attachment chooser. Set `ompContext.contentMode` to `inline` to include the selected text as a fenced code block after the reference.
+The default inline mode includes the reference plus selected text as a fenced code block, so OMP receives the exact bytes you selected. Set `ompContext.contentMode` to `reference` to send only `@file#LxCy-LxCy` when you prefer the smaller file-reference optimization.
 
 If the OMP bridge is not reachable, the VS Code extension copies the same context block to the clipboard.
 
@@ -104,7 +107,7 @@ To see the active endpoint and plugin version in a terminal, run:
 ## Settings
 
 - `ompContext.endpoint`: optional endpoint override. Empty means read `~/.omp/agent/editor-context-bridge.json`, then fall back to `http://127.0.0.1:47687`.
-- `ompContext.contentMode`: `reference` (default) sends only `@file#LxCy-LxCy`; `inline` includes the reference plus selected text as a fenced code block.
+- `ompContext.contentMode`: `inline` (default) includes the reference plus selected text as a fenced code block; `reference` sends only `@file#LxCy-LxCy`.
 
 
 ## Feature workflow

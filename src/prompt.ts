@@ -10,6 +10,12 @@ export interface EditorContext {
 
 export type ContentMode = "reference" | "inline"
 
+export const DEFAULT_CONTENT_MODE: ContentMode = "inline"
+
+export function resolveContentMode(value: string | undefined): ContentMode {
+  return value === "reference" ? "reference" : DEFAULT_CONTENT_MODE
+}
+
 const DEFAULT_CODE_FENCE = "```"
 
 export function buildReference(
@@ -24,7 +30,7 @@ export function buildReference(
   return `@${context.relativePath}#${rangeReference}`
 }
 
-export function formatContextPrompt(context: EditorContext, contentMode: ContentMode = "reference") {
+export function formatContextPrompt(context: EditorContext, contentMode: ContentMode = DEFAULT_CONTENT_MODE) {
   const reference = buildReference(context)
 
   if (contentMode === "reference" || context.selectedText.length === 0) {

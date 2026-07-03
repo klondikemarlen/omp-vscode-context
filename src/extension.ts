@@ -4,7 +4,7 @@ import path from "node:path"
 
 import * as vscode from "vscode"
 
-import { formatContextPrompt, type ContentMode, type EditorContext } from "./prompt"
+import { formatContextPrompt, resolveContentMode, type EditorContext } from "./prompt"
 
 
 interface BridgeState {
@@ -103,16 +103,10 @@ function getRelativePath(document: vscode.TextDocument) {
   return document.uri.toString()
 }
 
-function getContentMode(): ContentMode {
-  const value = vscode.workspace
+function getContentMode() {
+  return resolveContentMode(vscode.workspace
     .getConfiguration("ompContext")
-    .get<string>("contentMode", "reference")
-
-  if (value === "inline") {
-    return value
-  }
-
-  return "reference"
+    .get<string>("contentMode"))
 }
 
 

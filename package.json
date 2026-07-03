@@ -2,7 +2,7 @@
   "name": "omp-vscode-context",
   "displayName": "Oh My Pi Context Bridge",
   "description": "Send VS Code file and selection references to Oh My Pi with Ctrl+Alt+K.",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "publisher": "klondikemarlen",
   "type": "module",
   "license": "MIT",
@@ -85,8 +85,8 @@
             "reference",
             "inline"
           ],
-          "default": "reference",
-          "description": "What Ctrl+Alt+K inserts for a selection. Reference sends only @file#Lx-Ly so OMP can read the file; inline includes the reference plus selected text as a fenced code block."
+          "default": "inline",
+          "description": "What Ctrl+Alt+K inserts for a selection. Inline includes the reference plus selected text as a fenced code block; reference sends only @file#Lx-Ly so OMP can read the file."
         }
       }
     }
