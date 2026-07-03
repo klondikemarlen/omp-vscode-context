@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Remove the `selection` content mode to keep context formatting settings focused on reference and inline modes.
+- Document the post-publish Marketplace polling and reinstall verification step.
+
 ## 1.3.0
 
 - Add `selection` content mode for sending only selected text as a fenced code block.

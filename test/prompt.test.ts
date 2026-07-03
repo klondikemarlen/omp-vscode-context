@@ -45,12 +45,6 @@ test("formatContextPrompt includes selected code in inline mode", () => {
   assert.equal(prompt, "@src/example.ts#L7C17-L9C20 \n\n```typescript\nconst value = 1\nreturn value\n```")
 })
 
-test("formatContextPrompt can send only selected code", () => {
-  const prompt = formatContextPrompt(editorContext({}), "selection")
-
-  assert.equal(prompt, "```typescript\nconst value = 1\nreturn value\n```")
-})
-
 test("formatContextPrompt lengthens fence when selection contains backticks", () => {
   const prompt = formatContextPrompt(editorContext({
     relativePath: "README.md",

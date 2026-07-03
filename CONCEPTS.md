@@ -55,9 +55,8 @@ Only `delivery` and `prompt` are sent. VS Code owns editor inspection; OMP only 
 
 - `reference`: default. Sends only `@file#LxCy-LxCy `. Best for saved workspace files because OMP can inspect the file and the prompt stays small.
 - `inline`: sends `@file#LxCy-LxCy ` plus a fenced copy of the selected text. Useful for unsaved buffers, generated output, or when the exact selected bytes matter more than file freshness.
-- `selection`: sends only a fenced copy of the selected text, without the file reference. Useful for scratch buffers or copied output where the path is noise.
 
-Avoid using inline or selection mode as the default for large selections unless you want selected text copied into the prompt instead of only referenced.
+Avoid using inline mode as the default for large selections unless you want selected text copied into the prompt instead of only referenced.
 
 ## Delivery modes
 

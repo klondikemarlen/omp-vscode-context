@@ -20,7 +20,7 @@ Without a selection, OMP receives the current file and cursor position:
 
 The inserted prompt ends with a trailing space so you can keep typing immediately after the reference.
 
-The default is reference-only because OMP can read saved workspace files directly. This avoids pasting large selections into the prompt and avoids OMP's large-paste attachment chooser. Set `ompContext.contentMode` to `inline` to include the selected text as a fenced code block after the reference, or `selection` to send only the selected text as a fenced code block.
+The default is reference-only because OMP can read saved workspace files directly. This avoids pasting large selections into the prompt and avoids OMP's large-paste attachment chooser. Set `ompContext.contentMode` to `inline` to include the selected text as a fenced code block after the reference.
 
 If the OMP bridge is not reachable, the VS Code extension copies the same context block to the clipboard.
 
@@ -104,7 +104,7 @@ To see the active endpoint and plugin version in a terminal, run:
 ## Settings
 
 - `ompContext.endpoint`: optional endpoint override. Empty means read `~/.omp/agent/editor-context-bridge.json`, then fall back to `http://127.0.0.1:47687`.
-- `ompContext.contentMode`: `reference` (default) sends only `@file#LxCy-LxCy`; `inline` includes the reference plus selected text as a fenced code block; `selection` sends only selected text as a fenced code block.
+- `ompContext.contentMode`: `reference` (default) sends only `@file#LxCy-LxCy`; `inline` includes the reference plus selected text as a fenced code block.
 - `ompContext.delivery`: `paste` (default), `send`, or `nextTurn`.
 
 
@@ -117,6 +117,9 @@ For user-facing feature work:
 3. Open a pull request linked to the issue.
 4. Review the diff and run the smallest tests that cover the change.
 5. Merge only after the PR is reviewed and checks pass.
+6. For published changes, merge first, then bump the package version and changelog on `main`.
+7. Publish, then poll the Marketplace (`npx vsce show klondikemarlen.omp-vscode-context --json`) until the new version appears.
+8. Reinstall from the remote source and verify the installed version.
 
 ## Publish
 

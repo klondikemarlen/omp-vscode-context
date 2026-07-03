@@ -8,7 +8,7 @@ export interface EditorContext {
   readonly languageId: string
 }
 
-export type ContentMode = "reference" | "inline" | "selection"
+export type ContentMode = "reference" | "inline"
 
 const DEFAULT_CODE_FENCE = "```"
 
@@ -33,10 +33,6 @@ export function formatContextPrompt(context: EditorContext, contentMode: Content
 
   const fence = getCodeFence(context.selectedText)
   const language = normalizeLanguageId(context.languageId)
-
-  if (contentMode === "selection") {
-    return `${fence}${language}\n${context.selectedText}\n${fence}`
-  }
 
   return `${reference} \n\n${fence}${language}\n${context.selectedText}\n${fence}`
 }
