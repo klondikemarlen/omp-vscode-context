@@ -10,8 +10,6 @@ const HOST = "127.0.0.1"
 const MAX_PORT_ATTEMPTS = 20
 const MAX_BODY_BYTES = 2 * 1024 * 1024
 const HEALTH_TIMEOUT_MILLISECONDS = 500
-const PASTE_READBACK_TIMEOUT_MILLISECONDS = 100
-const STATUS_KEY = "omp-vscode-context"
 const STATE_FILE = join(homedir(), ".omp", "agent", "editor-context-bridge.json")
 const PACKAGE_FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "package.json")
 
@@ -220,73 +218,21 @@ async function pasteToPromptEditor(prompt) {
   }
 
   const ui = activeContext.ui
-  const canSetEditorText = typeof ui?.getEditorText === "function"
-    && typeof ui?.setEditorText === "function"
-  const beforePasteText = canSetEditorText ? await ui.getEditorText() : undefined
 
   if (typeof ui?.pasteToEditor === "function") {
     await ui.pasteToEditor(prompt)
-    await refreshPromptEditor(ui, beforePasteText, prompt)
     return true
   }
 
-  if (!canSetEditorText) {
+  if (typeof ui?.setEditorText !== "function") {
     return false
   }
 
-  await ui.setEditorText(`${typeof beforePasteText === "string" ? beforePasteText : ""}${prompt}`)
+  const beforePasteText = typeof ui.getEditorText === "function" ? await ui.getEditorText() : ""
+  await ui.setEditorText(`${beforePasteText}${prompt}`)
   return true
 }
 
-async function refreshPromptEditor(ui, beforePasteText, prompt) {
-  if (typeof beforePasteText !== "string") {
-    await requestPromptEditorRender(ui)
-    return
-  }
-
-  const editorText = await readEditorTextAfterPaste(ui, beforePasteText)
-  if (typeof editorText !== "string") {
-    return
-  }
-
-  const refreshedText = editorText === beforePasteText ? `${editorText}${prompt}` : editorText
-  if (refreshedText === beforePasteText) {
-    return
-  }
-
-  if (editorText !== beforePasteText && await requestPromptEditorRender(ui)) {
-    return
-  }
-
-  // Fallback for UI modes without a render-only status hook.
-  await ui.setEditorText(beforePasteText)
-  await nextTick()
-  await ui.setEditorText(refreshedText)
-  await requestPromptEditorRender(ui)
-}
-
-async function readEditorTextAfterPaste(ui, beforePasteText) {
-  const deadline = Date.now() + PASTE_READBACK_TIMEOUT_MILLISECONDS
-  let editorText = await ui.getEditorText()
-  while (editorText === beforePasteText && Date.now() < deadline) {
-    await nextTick()
-    editorText = await ui.getEditorText()
-  }
-  return editorText
-}
-
-async function requestPromptEditorRender(ui) {
-  if (typeof ui?.setStatus !== "function") {
-    return false
-  }
-
-  await ui.setStatus(STATUS_KEY, undefined)
-  return true
-}
-
-function nextTick() {
-  return new Promise((resolve) => setTimeout(resolve, 0))
-}
 
 async function claimActiveBridge({ force = false } = {}) {
   if (serverEndpoint === undefined || serverPort === undefined) {

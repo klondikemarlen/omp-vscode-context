@@ -68,9 +68,7 @@ omp plugin install github:klondikemarlen/omp-vscode-context
 
 Then restart OMP or run `/reload-plugins`.
 
-OMP now refreshes GitHub plugin lockfile pins when you re-run `omp plugin install`; the old manual `cd ~/.omp/plugins && bun update omp-vscode-context` workaround is no longer needed.
-
-If pasted context appears only after typing on older OMP builds, update this plugin and reload OMP; `omp-vscode-context@1.2.2` includes a repaint workaround until upstream OMP [can1357/oh-my-pi#4342](https://github.com/can1357/oh-my-pi/pull/4342) ships.
+Supported OMP runtime: `16.3.7` or newer. That release includes upstream OMP [can1357/oh-my-pi#4342](https://github.com/can1357/oh-my-pi/pull/4342), which repaints the prompt after extension `pasteToEditor` / `setEditorText` mutations; older runtimes may still load the plugin but are outside this repo's support floor.
 
 This plugin is installed from the GitHub repo because it ships an OMP runtime extension, while the VS Code half is installed from Marketplace.
 

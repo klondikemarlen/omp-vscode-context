@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Document OMP 16.3.7+ as the supported runtime floor and remove the older prompt repaint workaround from the bridge.
+
 ## 1.3.3
 
 - Make inline context the default so selected text is pasted with the file reference; keep reference mode as the compact optimization.
