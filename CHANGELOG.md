@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.0
+
+- Clarify that inline mode is stale-safe because it sends both the file reference and exact selected text.
+
 ## 1.4.0
 
 - Document OMP 16.3.7+ as the supported runtime floor and remove the older prompt repaint workaround from the bridge.
