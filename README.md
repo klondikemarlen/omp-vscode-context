@@ -23,7 +23,7 @@ Without a selection, OMP receives the current file and cursor position:
 @src/example.ts#L7C17 
 ```
 
-The default inline mode includes the reference plus selected text as a fenced code block, so OMP receives the exact bytes you selected. Set `ompContext.contentMode` to `reference` to send only `@file#LxCy-LxCy` when you prefer the smaller file-reference optimization.
+The default inline mode is stale-safe: it includes the reference plus selected text as a fenced code block, so OMP receives the exact bytes you selected even if the file changes before the agent reads it. Set `ompContext.contentMode` to `reference` to send only `@file#LxCy-LxCy` when you prefer the smaller file-reference optimization.
 
 If the OMP bridge is not reachable, the VS Code extension copies the same context block to the clipboard.
 
@@ -105,7 +105,7 @@ To see the active endpoint and plugin version in a terminal, run:
 ## Settings
 
 - `ompContext.endpoint`: optional endpoint override. Empty means read `~/.omp/agent/editor-context-bridge.json`, then fall back to `http://127.0.0.1:47687`.
-- `ompContext.contentMode`: `inline` (default) includes the reference plus selected text as a fenced code block; `reference` sends only `@file#LxCy-LxCy`.
+- `ompContext.contentMode`: `inline` (default) is stale-safe and includes the reference plus selected text as a fenced code block; `reference` sends only `@file#LxCy-LxCy`.
 
 
 ## Feature workflow

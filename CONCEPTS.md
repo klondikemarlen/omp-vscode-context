@@ -10,7 +10,7 @@
 - **Editor facts come from VS Code:** Current file, cursor, selection, selected text, and language id are captured by the VS Code extension only.
 - **Prompt mutation happens in OMP:** OMP owns the live prompt editor, so prompt insertion uses an OMP runtime extension.
 - **Local bridge, not public API:** The HTTP server binds to `127.0.0.1` and requires the token written by the running OMP extension.
-- **Inline first:** Default to `@file#LxCy-LxCy` plus selected text so OMP receives the exact bytes. Reference-only mode stays available as the compact saved-file optimization.
+- **Inline first:** Default to stale-safe `@file#LxCy-LxCy` plus selected text so OMP receives the exact bytes even if the file changes before the agent reads it. Reference-only mode stays available as the compact saved-file optimization.
 
 ## Problem shape
 
@@ -52,7 +52,7 @@ Only `prompt` is sent. VS Code owns editor inspection; OMP only needs the text t
 
 ## Content modes
 
-- `inline`: default. Sends `@file#LxCy-LxCy ` plus a fenced copy of the selected text. Safest when the selected bytes matter, or when buffers are unsaved/generated.
+- `inline`: default. Sends `@file#LxCy-LxCy ` plus a fenced copy of the selected text, making the prompt context stale-safe for active editing, unsaved buffers, and generated files.
 - `reference`: sends only `@file#LxCy-LxCy `. Smaller prompt for saved workspace files because OMP can inspect the file directly.
 
 Use `reference` for large selections when you prefer a compact prompt over copying selected text into OMP.
