@@ -27,6 +27,8 @@ The default inline mode is stale-safe: it includes the reference plus selected t
 
 If the OMP bridge is not reachable, the VS Code extension copies the same context block to the clipboard.
 
+Use **OMP Context: Insert Agent Handoff Packet** when you want a bounded Markdown packet for hands-off agent work. It keeps the same active editor context, then adds your editable goal/constraint/check prompt, workspace root, visible editor references, and capped VS Code diagnostics. It only inserts text into OMP; it does not submit the prompt.
+
 ## Install
 
 You need both pieces:
@@ -112,7 +114,14 @@ To see the active endpoint and plugin version in a terminal, run:
 
 - `ompContext.endpoint`: optional endpoint override. Empty means read `~/.omp/agent/editor-context-bridge.json`, then fall back to `http://127.0.0.1:47687`.
 - `ompContext.contentMode`: `inline` (default) is stale-safe and includes the reference plus selected text as a fenced code block; `reference` sends only `@file#LxCy-LxCy`.
+- `ompContext.handoffPreface`: editable starter text included in **OMP Context: Insert Agent Handoff Packet**. Default: `Goal:`, `Constraints:`, `Verify with:`.
+- `ompContext.handoffMaxBytes`: maximum bytes inserted by the handoff packet. Default: `20000`.
+- `ompContext.handoffMaxDiagnostics`: maximum VS Code diagnostics included in the handoff packet. Default: `20`.
+- `ompContext.handoffMaxVisibleEditors`: maximum visible editor references included in the handoff packet. Default: `10`.
 
+Use `Ctrl+Alt+K` / `Cmd+Alt+K` for minimal file/selection context. Use the handoff command from the Command Palette when the agent needs the current editor plus bounded IDE context for a larger autonomous task.
+
+Privacy boundary: the handoff packet is explicit and local, but it may include selected text, local paths, visible editor paths, and diagnostics. Obvious `token=`, `secret=`, `password=`, `apiKey=`, and `authorization=` diagnostic values are redacted; review the inserted prompt before submitting if the workspace contains sensitive data.
 
 ## Feature workflow
 

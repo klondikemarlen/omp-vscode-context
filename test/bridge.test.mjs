@@ -98,6 +98,43 @@ test("OMP bridge accepts authorized context and pastes into editor", async () =>
   })
 })
 
+test("OMP bridge delivers structured Markdown prompt unchanged", async () => {
+  await withBridge(BASE_PORT + 23, async ({ handlers, stateFile }) => {
+    const pastedPrompts = []
+    const markdownPrompt = [
+      "# OMP Agent Handoff",
+      "",
+      "## Goal / constraints / verify with",
+      "Goal: preserve exact packet body",
+      "Verify with: targeted bridge test",
+      "",
+      "## Active editor",
+      "@src/example.ts#L1C1-L2C3 ",
+      "",
+      "```ts",
+      "const value = 1",
+      "```",
+    ].join("\n")
+
+    await handlers.get("session_start")({}, {
+      hasUI: true,
+      ui: {
+        async pasteToEditor(prompt) {
+          pastedPrompts.push(prompt)
+        },
+      },
+    })
+
+    const state = JSON.parse(await fs.readFile(stateFile, "utf8"))
+    const response = await postContext(state, {
+      prompt: markdownPrompt,
+    })
+
+    assert.equal(response.status, 200)
+    assert.deepEqual(pastedPrompts, [markdownPrompt])
+  })
+})
+
 test("OMP bridge appends prompt with setEditorText fallback", async () => {
   await withBridge(BASE_PORT + 22, async ({ handlers, stateFile }) => {
     let editorText = "draft "

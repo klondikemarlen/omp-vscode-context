@@ -38,7 +38,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:ompContext.insertEditorContext"
+    "onCommand:ompContext.insertEditorContext",
+    "onCommand:ompContext.insertAgentHandoff"
   ],
   "main": "./dist/extension.cjs",
   "files": [
@@ -59,6 +60,10 @@
       {
         "command": "ompContext.insertEditorContext",
         "title": "OMP Context: Insert Editor Context"
+      },
+      {
+        "command": "ompContext.insertAgentHandoff",
+        "title": "OMP Context: Insert Agent Handoff Packet"
       }
     ],
     "keybindings": [
@@ -87,6 +92,31 @@
           ],
           "default": "inline",
           "description": "What Ctrl+Alt+K inserts for a selection. Inline includes the reference plus selected text as a fenced code block; reference sends only @file#Lx-Ly so OMP can read the file."
+        },
+        "ompContext.handoffPreface": {
+          "type": "string",
+          "default": "Goal:\n\nConstraints:\n\nVerify with:",
+          "description": "Editable starter text included in OMP Context: Insert Agent Handoff Packet."
+        },
+        "ompContext.handoffMaxBytes": {
+          "type": "number",
+          "default": 20000,
+          "minimum": 1000,
+          "description": "Maximum bytes inserted by OMP Context: Insert Agent Handoff Packet."
+        },
+        "ompContext.handoffMaxDiagnostics": {
+          "type": "number",
+          "default": 20,
+          "multipleOf": 1,
+          "minimum": 0,
+          "description": "Maximum VS Code diagnostics included in OMP Context: Insert Agent Handoff Packet."
+        },
+        "ompContext.handoffMaxVisibleEditors": {
+          "type": "number",
+          "default": 10,
+          "multipleOf": 1,
+          "minimum": 0,
+          "description": "Maximum visible editor references included in OMP Context: Insert Agent Handoff Packet."
         }
       }
     }
