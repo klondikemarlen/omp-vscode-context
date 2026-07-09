@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.3
+
+- Remove low-value handoff packet settings and omit visible editor references from handoff output.
+
 ## 1.6.2
 
 - Prioritize `ompContext.insertMode` in VS Code settings and mark handoff-only tuning settings as advanced.

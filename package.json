@@ -2,7 +2,7 @@
   "name": "omp-vscode-context",
   "displayName": "Oh My Pi Context Bridge",
   "description": "Send VS Code file and selection references to Oh My Pi with Ctrl+Alt+K.",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "publisher": "klondikemarlen",
   "type": "module",
   "license": "MIT",
