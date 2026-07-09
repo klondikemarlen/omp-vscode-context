@@ -4,7 +4,7 @@ import path from "node:path"
 
 import * as vscode from "vscode"
 
-import { formatContextPrompt, resolveContentMode, type EditorContext } from "./prompt"
+import { formatAgentHandoffPacket, formatContextPrompt, resolveContentMode, type EditorContext, type EditorReference, type HandoffDiagnostic } from "./prompt"
 
 
 interface BridgeState {
@@ -16,14 +16,22 @@ interface BridgeState {
 const DEFAULT_ENDPOINT = "http://127.0.0.1:47687"
 const STATE_FILE = path.join(os.homedir(), ".omp", "agent", "editor-context-bridge.json")
 const REQUEST_TIMEOUT_MILLISECONDS = 2000
+const DEFAULT_HANDOFF_MAX_BYTES = 20_000
+const DEFAULT_HANDOFF_MAX_DIAGNOSTICS = 20
+const DEFAULT_HANDOFF_MAX_VISIBLE_EDITORS = 10
+const DEFAULT_HANDOFF_PREFACE = "Goal:\n\nConstraints:\n\nVerify with:"
 
 export function activate(context: vscode.ExtensionContext) {
-  const disposable = vscode.commands.registerCommand(
+  const insertDisposable = vscode.commands.registerCommand(
     "ompContext.insertEditorContext",
     insertEditorContext,
   )
+  const handoffDisposable = vscode.commands.registerCommand(
+    "ompContext.insertAgentHandoff",
+    insertAgentHandoffContext,
+  )
 
-  context.subscriptions.push(disposable)
+  context.subscriptions.push(insertDisposable, handoffDisposable)
 }
 
 export function deactivate() {}
@@ -35,18 +43,45 @@ async function insertEditorContext() {
     return
   }
 
-  const editorContext = getEditorContext(activeEditor)
-  const prompt = formatContextPrompt(editorContext, getContentMode())
-  const bridgeRequest = { prompt }
-  const bridgeState = await getBridgeState()
+  const prompt = formatContextPrompt(getEditorContext(activeEditor), getContentMode())
+  await sendPrompt(prompt, "context")
+}
 
+async function insertAgentHandoffContext() {
+  const activeEditor = vscode.window.activeTextEditor
+  if (activeEditor === undefined) {
+    await vscode.window.showWarningMessage("Open a file before sending an agent handoff to OMP.")
+    return
+  }
+
+  const settings = getHandoffSettings()
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(activeEditor.document.uri)
+    ?? vscode.workspace.workspaceFolders?.[0]
+  const visibleEditorReferences = vscode.window.visibleTextEditors.map(getEditorReference)
+  const diagnostics = getHandoffDiagnostics()
+  const prompt = formatAgentHandoffPacket({
+    current: getEditorContext(activeEditor),
+    contentMode: getContentMode(),
+    workspaceRoot: workspaceFolder?.uri.fsPath,
+    visibleEditors: visibleEditorReferences.slice(0, settings.maxVisibleEditors),
+    omittedVisibleEditors: Math.max(0, visibleEditorReferences.length - settings.maxVisibleEditors),
+    diagnostics: diagnostics.slice(0, settings.maxDiagnostics),
+    omittedDiagnostics: Math.max(0, diagnostics.length - settings.maxDiagnostics),
+    preface: settings.preface,
+    maxBytes: settings.maxBytes,
+  })
+
+  await sendPrompt(prompt, "agent handoff")
+}
+
+async function sendPrompt(prompt: string, label: string) {
   try {
-    await postContext(bridgeState, bridgeRequest)
+    await postContext(await getBridgeState(), { prompt })
   } catch (error) {
     await vscode.env.clipboard.writeText(prompt)
     const message = error instanceof Error ? error.message : "Unknown bridge error"
     await vscode.window.showWarningMessage(
-      `OMP bridge unavailable; copied context to clipboard. ${message}`,
+      `OMP bridge unavailable; copied ${label} to clipboard. ${message}`,
     )
   }
 }
@@ -91,22 +126,63 @@ function getEditorContext(activeEditor: vscode.TextEditor): EditorContext {
 
 
 function getRelativePath(document: vscode.TextDocument) {
-  const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri)
+  return getRelativePathForUri(document.uri)
+}
+
+function getRelativePathForUri(uri: vscode.Uri) {
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri)
   if (workspaceFolder !== undefined) {
-    return vscode.workspace.asRelativePath(document.uri, false)
+    return vscode.workspace.asRelativePath(uri, false)
   }
 
-  if (document.uri.scheme === "file") {
-    return document.uri.fsPath
+  if (uri.scheme === "file") {
+    return uri.fsPath
   }
 
-  return document.uri.toString()
+  return uri.toString()
 }
 
 function getContentMode() {
   return resolveContentMode(vscode.workspace
     .getConfiguration("ompContext")
     .get<string>("contentMode"))
+}
+
+function getEditorReference(editor: vscode.TextEditor): EditorReference {
+  const context = getEditorContext(editor)
+  return {
+    relativePath: context.relativePath,
+    startLine: context.startLine,
+    endLine: context.endLine,
+    startCharacter: context.startCharacter,
+    endCharacter: context.endCharacter,
+  }
+}
+
+function getHandoffSettings() {
+  const configuration = vscode.workspace.getConfiguration("ompContext")
+
+  return {
+    preface: configuration.get<string>("handoffPreface", DEFAULT_HANDOFF_PREFACE),
+    maxBytes: Math.max(1_000, configuration.get<number>("handoffMaxBytes", DEFAULT_HANDOFF_MAX_BYTES)),
+    maxDiagnostics: Math.max(0, Math.floor(configuration.get<number>("handoffMaxDiagnostics", DEFAULT_HANDOFF_MAX_DIAGNOSTICS))),
+    maxVisibleEditors: Math.max(0, Math.floor(configuration.get<number>("handoffMaxVisibleEditors", DEFAULT_HANDOFF_MAX_VISIBLE_EDITORS))),
+  }
+}
+
+function getHandoffDiagnostics(): HandoffDiagnostic[] {
+  const severities = ["Error", "Warning", "Information", "Hint"]
+
+  return vscode.languages.getDiagnostics().flatMap(([uri, diagnostics]) => diagnostics.map((diagnostic) => ({
+    relativePath: getRelativePathForUri(uri),
+    startLine: diagnostic.range.start.line + 1,
+    endLine: diagnostic.range.end.line + 1,
+    startCharacter: diagnostic.range.start.character + 1,
+    endCharacter: diagnostic.range.end.character + 1,
+    severity: severities[diagnostic.severity] ?? "Diagnostic",
+    message: diagnostic.message,
+    source: diagnostic.source,
+  })))
 }
 
 

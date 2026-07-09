@@ -18,8 +18,8 @@ Claude Code and OpenCode feel integrated because the IDE extension knows the edi
 
 This repo is therefore two integrations in one package:
 
-1. VS Code extension: registers `OMP Context: Insert Editor Context` and binds it to `Ctrl+Alt+K` / `Cmd+Alt+K`.
-2. OMP extension: starts a loopback bridge and inserts received context into the OMP prompt.
+1. VS Code extension: registers `OMP Context: Insert Editor Context` for minimal file/selection context and `OMP Context: Insert Agent Handoff Packet` for an explicit bounded Markdown handoff.
+2. OMP extension: starts a loopback bridge and inserts received prompt text into the OMP prompt.
 
 ## Runtime flow
 
@@ -48,14 +48,14 @@ The VS Code extension posts JSON to `/context`:
 }
 ```
 
-Only `prompt` is sent. VS Code owns editor inspection; OMP only needs the text to paste.
-
-## Content modes
+Only `prompt` is sent. VS Code owns editor inspection and packet assembly; OMP only needs the text to paste. Rich handoff packets still use this same transport shape.
+## Content modes and handoff packets
 
 - `inline`: default. Sends `@file#LxCy-LxCy ` plus a fenced copy of the selected text, making the prompt context stale-safe for active editing, unsaved buffers, and generated files.
 - `reference`: sends only `@file#LxCy-LxCy `. Smaller prompt for saved workspace files because OMP can inspect the file directly.
+- Agent handoff packet: separate command that wraps the active editor context with an editable preface, workspace root, visible editor references, and capped diagnostics. It is explicit, local, bounded by settings, and not auto-submitted.
 
-Use `reference` for large selections when you prefer a compact prompt over copying selected text into OMP.
+Use `reference` for large selections when you prefer a compact prompt over copying selected text into OMP. Use the handoff packet when the agent needs more IDE context than one file/selection.
 
 
 ## Prompt repaint compatibility
@@ -93,7 +93,8 @@ This extension chooses OpenCode's chord because the request named `Ctrl+Alt+K`, 
 
 ## Limits
 
-- This is not full automatic IDE context awareness. It sends context when the shortcut is pressed.
-- Diagnostics, open tabs, terminal output, and live LSP state are not sent.
+- This is not full automatic IDE context awareness. It sends context when a command is run.
+- Handoff packets include visible editor references and VS Code diagnostics only at command time; terminal output, live LSP state, and git diff summaries are not sent.
+- Handoff packets may include local paths and diagnostic text. The formatter redacts obvious secret-looking diagnostic values, but the user remains the privacy boundary before submitting the prompt.
 - The VS Code command requires editor focus because VS Code keybindings with `editorTextFocus` should not steal `Ctrl+Alt+K` from OMP or terminals.
 - Multiple running OMP sessions share one active state file. Use `/ide` when you need to target a specific terminal explicitly.
