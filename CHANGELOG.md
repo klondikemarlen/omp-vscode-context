@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.0
+
+- Add the `OMP Context: Insert Agent Handoff Packet` command for bounded Markdown handoffs with active editor context, workspace root, visible editor references, capped diagnostics, byte caps, and clipboard fallback.
+
 ## 1.5.1
 
 - Document the Devin Desktop CLI as a Marketplace install fallback when `code` is unavailable.
