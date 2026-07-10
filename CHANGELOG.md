@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.6
+
+- Add an OMP-side cosmetic paste separator so typing after a context paste does not run into the paste badge.
+
 ## 1.6.5
 
 - End handoff packets with an edit-friendly blank line and move the endpoint override into advanced settings.
