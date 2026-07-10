@@ -116,8 +116,8 @@ To see the active endpoint and plugin version in a terminal, run:
 
 - `ompContext.insertMode`: primary shortcut mode. `agentHandoff` (default) sends the bounded handoff packet; `editorContext` keeps `Ctrl+Alt+K` / `Cmd+Alt+K` on the minimal file/selection prompt.
 - `ompContext.contentMode`: selected-text format used by both modes. `inline` (default) includes the reference plus selected text as a fenced code block; `reference` sends only `@file#LxCy-LxCy`.
-- `ompContext.endpoint`: optional endpoint override. Empty means read `~/.omp/agent/editor-context-bridge.json`, then fall back to `http://127.0.0.1:47687`.
-- Advanced handoff-only settings, used when `ompContext.insertMode` is `agentHandoff` or when the explicit handoff command is used:
+- Advanced settings:
+  - `ompContext.endpoint`: optional endpoint override. Empty means read `~/.omp/agent/editor-context-bridge.json`, then fall back to `http://127.0.0.1:47687`.
   - `ompContext.handoffMaxBytes`: maximum bytes inserted by the handoff packet. Default: `20000`.
   - `ompContext.handoffMaxDiagnostics`: maximum VS Code diagnostics included in the handoff packet. Default: `20`.
 

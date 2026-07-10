@@ -85,7 +85,7 @@ export function formatAgentHandoffPacket(packet: AgentHandoffPacket) {
     sections.push("## Diagnostics", diagnostics)
   }
 
-  return capBytes(sections.join("\n\n"), packet.maxBytes)
+  return endWithBlankLine(sections.join("\n\n"), packet.maxBytes)
 }
 
 function formatDiagnostics(diagnostics: readonly HandoffDiagnostic[], omittedCount = 0) {
@@ -103,6 +103,11 @@ function redactSecretishText(text: string) {
   return text
     .replace(/\bauthorization\b\s*[:=]\s*(?:bearer|basic)\s+\S+/gi, "authorization=[redacted]")
     .replace(/\b(token|secret|password|api[_-]?key|authorization)\b\s*[:=]\s*\S+/gi, "$1=[redacted]")
+}
+
+function endWithBlankLine(text: string, maxBytes: number) {
+  const terminator = "\n\n"
+  return `${capBytes(text, Math.max(0, maxBytes - Buffer.byteLength(terminator)))}${terminator}`
 }
 
 function capBytes(text: string, maxBytes: number) {

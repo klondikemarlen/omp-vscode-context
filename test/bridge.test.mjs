@@ -114,6 +114,8 @@ test("OMP bridge delivers structured Markdown prompt unchanged", async () => {
       "```ts",
       "const value = 1",
       "```",
+      "",
+      "",
     ].join("\n")
 
     await handlers.get("session_start")({}, {

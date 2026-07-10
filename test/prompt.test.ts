@@ -83,7 +83,7 @@ test("formatAgentHandoffPacket omits empty optional sections", () => {
     maxBytes: 20_000,
   })
 
-  assert.match(prompt, /^# OMP Agent Handoff\n\n## Active editor\n\n@src\/example\.ts#L7C17-L9C20 $/)
+  assert.match(prompt, /^# OMP Agent Handoff\n\n## Active editor\n\n@src\/example\.ts#L7C17-L9C20 \n\n$/)
   assert.doesNotMatch(prompt, /## (Goal \/ constraints \/ verify with|Instructions|Other visible editors|Diagnostics)/)
 })
 
@@ -121,6 +121,7 @@ test("formatAgentHandoffPacket includes handoff context and omission notes", () 
   assert.match(prompt, /- Root: `\/work\/omp-vscode-context`/)
   assert.match(prompt, /- Error ts: @src\/current\.ts#L4C7-L4C14 Type 'string' is not assignable to type 'number'\./)
   assert.match(prompt, /3 more omitted by ompContext\.handoffMaxDiagnostics/)
+  assert.equal(prompt.endsWith("\n\n"), true)
 })
 
 test("formatAgentHandoffPacket respects byte cap without splitting UTF-8", () => {
@@ -136,7 +137,7 @@ test("formatAgentHandoffPacket respects byte cap without splitting UTF-8", () =>
   })
 
   assert.ok(Buffer.byteLength(prompt, "utf8") <= 300)
-  assert.ok(prompt.endsWith("\n\n… truncated by ompContext.handoffMaxBytes"))
+  assert.ok(prompt.endsWith("\n\n… truncated by ompContext.handoffMaxBytes\n\n"))
   assert.equal(prompt.includes("\uFFFD"), false)
 })
 

@@ -103,6 +103,9 @@
           "type": "string",
           "default": "",
           "order": 30,
+          "tags": [
+            "advanced"
+          ],
           "description": "Override the OMP context bridge endpoint. Empty means read ~/.omp/agent/editor-context-bridge.json, then fall back to http://127.0.0.1:47687."
         },
         "ompContext.handoffMaxBytes": {
