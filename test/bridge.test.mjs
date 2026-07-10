@@ -87,18 +87,25 @@ test("OMP bridge accepts authorized context and pastes into editor", async () =>
     assert.equal(commands.has("ide-status"), true)
 
     const response = await postContext(state, {
-      prompt: "@src/example.ts#L1C1 ",
+      prompt: "@src/example.ts#L1C1",
     })
 
     assert.equal(response.status, 200)
-    assert.deepEqual(pastedPrompts, ["@src/example.ts#L1C1 "])
+    assert.deepEqual(pastedPrompts, ["@src/example.ts#L1C1", " "])
+
+    const spacedResponse = await postContext(state, {
+      prompt: "@src/with-space.ts#L1C1 ",
+    })
+
+    assert.equal(spacedResponse.status, 200)
+    assert.deepEqual(pastedPrompts, ["@src/example.ts#L1C1", " ", "@src/with-space.ts#L1C1 "])
 
     await handlers.get("session_shutdown")()
     await assert.rejects(fs.stat(stateFile))
   })
 })
 
-test("OMP bridge delivers structured Markdown prompt unchanged", async () => {
+test("OMP bridge adds an edit separator after structured Markdown prompts", async () => {
   await withBridge(BASE_PORT + 23, async ({ handlers, stateFile }) => {
     const pastedPrompts = []
     const markdownPrompt = [
@@ -133,7 +140,7 @@ test("OMP bridge delivers structured Markdown prompt unchanged", async () => {
     })
 
     assert.equal(response.status, 200)
-    assert.deepEqual(pastedPrompts, [markdownPrompt])
+    assert.deepEqual(pastedPrompts, [markdownPrompt, " "])
   })
 })
 
@@ -155,7 +162,7 @@ test("OMP bridge appends prompt with setEditorText fallback", async () => {
 
     const state = JSON.parse(await fs.readFile(stateFile, "utf8"))
     const response = await postContext(state, {
-      prompt: "@src/example.ts#L1C1 ",
+      prompt: "@src/example.ts#L1C1",
     })
 
     assert.equal(response.status, 200)

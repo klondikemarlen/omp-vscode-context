@@ -212,6 +212,10 @@ async function deliverContext(body) {
   throw new Error("No active OMP prompt editor available")
 }
 
+function withEditSeparator(prompt) {
+  return prompt.endsWith(" ") ? prompt : `${prompt} `
+}
+
 async function pasteToPromptEditor(prompt) {
   if (!activeContext?.hasUI) {
     return false
@@ -221,6 +225,9 @@ async function pasteToPromptEditor(prompt) {
 
   if (typeof ui?.pasteToEditor === "function") {
     await ui.pasteToEditor(prompt)
+    if (!prompt.endsWith(" ")) {
+      await ui.pasteToEditor(" ")
+    }
     return true
   }
 
@@ -229,7 +236,7 @@ async function pasteToPromptEditor(prompt) {
   }
 
   const beforePasteText = typeof ui.getEditorText === "function" ? await ui.getEditorText() : ""
-  await ui.setEditorText(`${beforePasteText}${prompt}`)
+  await ui.setEditorText(`${beforePasteText}${withEditSeparator(prompt)}`)
   return true
 }
 
