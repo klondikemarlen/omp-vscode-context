@@ -112,11 +112,11 @@ To see the active endpoint and plugin version in a terminal, run:
 /ide-status
 ```
 
-### Experimental terminal focus routing
+### Experimental Linux terminal focus routing
 
-Enable **Claim IDE context on focus** in OMP **Settings → Plugins → omp-vscode-context**, or start OMP with `--claim-ide-context-on-focus`. Both are off by default; `/ide` remains the explicit override.
+On Linux, enable **Claim IDE context on focus** in OMP **Settings → Plugins → omp-vscode-context**, or start OMP with `--claim-ide-context-on-focus`. Both are off by default; `/ide` remains the explicit override. This setting does nothing outside Linux.
 
-This uses xterm focus reporting, so it works with any terminal or transport that forwards DECSET 1004 reports. Hover is not enough: the terminal must actually receive focus. Unsupported terminals preserve the normal manual route. This requires an OMP runtime that provides terminal-focus reporting.
+The Linux-only feature uses xterm focus reporting, so it works with any Linux terminal or transport that forwards DECSET 1004 reports. Hover is not enough: the terminal must actually receive focus. Unsupported terminals preserve the normal manual route. This requires an OMP runtime that provides terminal-focus reporting.
 
 ## Settings
 

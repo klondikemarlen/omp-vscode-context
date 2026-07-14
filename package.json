@@ -58,7 +58,7 @@
       "claimIdeContextOnFocus": {
         "type": "boolean",
         "default": false,
-        "description": "Claim IDE context automatically when this terminal gains focus."
+        "description": "On Linux, claim IDE context automatically when this terminal gains focus."
       }
     }
   },

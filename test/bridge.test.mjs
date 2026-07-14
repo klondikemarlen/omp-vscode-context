@@ -9,12 +9,14 @@ import { syncBuiltinESMExports } from "node:module"
 
 const BASE_PORT = 48731
 
-async function withBridge(port, run, { flags = {}, pluginSettings = {} } = {}) {
+async function withBridge(port, run, { flags = {}, pluginSettings = {}, platform = process.platform } = {}) {
   const originalHome = process.env.HOME
   const originalPort = process.env.OMP_CONTEXT_BRIDGE_PORT
   const homeDirectory = await fs.mkdtemp(path.join(os.tmpdir(), "omp-vscode-context-"))
   process.env.HOME = homeDirectory
   process.env.OMP_CONTEXT_BRIDGE_PORT = String(port)
+  const originalPlatform = Object.getOwnPropertyDescriptor(process, "platform")
+  Object.defineProperty(process, "platform", { ...originalPlatform, value: platform })
 
   const handlers = new Map()
   const commands = new Map()
@@ -57,7 +59,7 @@ async function withBridge(port, run, { flags = {}, pluginSettings = {} } = {}) {
   } finally {
     await handlers.get("session_shutdown")?.()
     process.env.HOME = originalHome
-    process.env.OMP_CONTEXT_BRIDGE_PORT = originalPort
+    Object.defineProperty(process, "platform", originalPlatform)
     await fs.rm(homeDirectory, {
       recursive: true,
       force: true,
@@ -312,12 +314,12 @@ test("focus routing is disabled by default", async () => {
   })
 })
 
-test("plugin setting enables focus routing", async () => {
+test("plugin setting enables Linux focus routing", async () => {
   const packageJson = JSON.parse(await fs.readFile("package.json", "utf8"))
   assert.deepEqual(packageJson.omp.settings.claimIdeContextOnFocus, {
     type: "boolean",
     default: false,
-    description: "Claim IDE context automatically when this terminal gains focus.",
+    description: "On Linux, claim IDE context automatically when this terminal gains focus.",
   })
 
   await withBridge(BASE_PORT + 11, async ({ handlers }) => {
@@ -337,6 +339,28 @@ test("plugin setting enables focus routing", async () => {
     pluginSettings: {
       claimIdeContextOnFocus: true,
     },
+  })
+})
+
+test("focus routing is disabled outside Linux", async () => {
+  await withBridge(BASE_PORT + 12, async ({ handlers }) => {
+    let subscribed = false
+    await handlers.get("session_start")({}, {
+      hasUI: true,
+      ui: {
+        onTerminalFocusChange() {
+          subscribed = true
+          return () => {}
+        },
+      },
+    })
+
+    assert.equal(subscribed, false)
+  }, {
+    pluginSettings: {
+      claimIdeContextOnFocus: true,
+    },
+    platform: "darwin",
   })
 })
 
@@ -399,7 +423,7 @@ test("focus flag claims the bridge after a terminal focus report", async () => {
       })
 
       assert.deepEqual(registeredFlags.get("claim-ide-context-on-focus"), {
-        description: "Claim IDE context when this terminal gains focus",
+        description: "On Linux, claim IDE context when this terminal gains focus",
         type: "boolean",
         default: false,
       })

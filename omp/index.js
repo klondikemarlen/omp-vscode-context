@@ -26,7 +26,7 @@ export default function ompVscodeContextExtension(pi) {
   pi.setLabel("VS Code Context Bridge")
 
   pi.registerFlag("claim-ide-context-on-focus", {
-    description: "Claim IDE context when this terminal gains focus",
+    description: "On Linux, claim IDE context when this terminal gains focus",
     type: "boolean",
     default: false,
   })
@@ -73,7 +73,8 @@ export default function ompVscodeContextExtension(pi) {
 
 async function enableFocusClaiming(pi, ctx) {
   if (
-    !ctx.hasUI
+    process.platform !== "linux"
+    || !ctx.hasUI
     || focusUnsubscribe !== undefined
     || !(pi.getFlag("claim-ide-context-on-focus") === true || pi.getPluginSettings?.().claimIdeContextOnFocus === true)
   ) {
