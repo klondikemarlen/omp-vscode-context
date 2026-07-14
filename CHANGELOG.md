@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.7
+
+- Add opt-in Linux terminal-focus routing so VS Code context follows the OMP terminal that reports xterm focus.
+
 ## 1.6.6
 
 - Add an OMP-side cosmetic paste separator so typing after a context paste does not run into the paste badge.
