@@ -118,6 +118,8 @@ On Linux, enable **Claim IDE context on focus** in OMP **Settings â†’ Plugins â†
 
 The Linux-only feature uses xterm focus reporting, so it works with any Linux terminal or transport that forwards DECSET 1004 reports. Hover is not enough: the terminal must actually receive focus. Unsupported terminals preserve the normal manual route. This requires an OMP runtime that provides terminal-focus reporting.
 
+When using a terminal multiplexer, configure it to forward xterm focus reports to OMP; otherwise automatic claiming stays inactive and `/ide` remains available.
+
 ## Settings
 
 - `ompContext.insertMode`: primary shortcut mode. `agentHandoff` (default) sends the bounded handoff packet; `editorContext` keeps `Ctrl+Alt+K` / `Cmd+Alt+K` on the minimal file/selection prompt.

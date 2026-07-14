@@ -89,6 +89,8 @@ Multiple OMP terminals can run the plugin at the same time. Each terminal listen
 
 On Linux, the OMP-side **Claim IDE context on focus** plugin setting and `--claim-ide-context-on-focus` flag are disabled by default. When the runtime exposes terminal-focus reporting and the terminal emits xterm DECSET 1004 focus-in, the focused OMP instance force-claims the same state file. This is a Linux capability-based feature: no terminal-emulator, desktop, PID, or VS Code API detection is involved. Focus-out does nothing; unsupported Linux transports retain `/ide` routing. The setting is inert outside Linux.
 
+Terminal multiplexers must forward xterm focus reports to OMP for automatic claiming; otherwise the feature remains inactive and `/ide` is the manual route.
+
 ## Shortcut semantics
 
 OpenCode documents `Ctrl+Alt+K` / `Cmd+Alt+K` as a file-reference insertion shortcut. Claude Code documents `Alt+K` / `Option+K` as **Insert @-Mention Reference** and also exposes selected text automatically.
