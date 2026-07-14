@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto"
 import { createServer } from "node:http"
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises"
+import { link, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises"
 import { homedir } from "node:os"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -20,9 +20,16 @@ let server
 let serverPort
 let token
 let serverEndpoint
+let focusUnsubscribe
 
 export default function ompVscodeContextExtension(pi) {
   pi.setLabel("VS Code Context Bridge")
+
+  pi.registerFlag("claim-ide-context-on-focus", {
+    description: "Claim IDE context when this terminal gains focus",
+    type: "boolean",
+    default: false,
+  })
 
   pi.registerCommand("ide", {
     description: "Route VS Code editor context to this OMP terminal",
@@ -47,6 +54,7 @@ export default function ompVscodeContextExtension(pi) {
     activeContext = ctx
     await ensureServer(pi, ctx)
     await claimActiveBridge()
+    await enableFocusClaiming(pi, ctx)
   })
 
   pi.on("session_switch", async (_event, ctx) => {
@@ -56,10 +64,34 @@ export default function ompVscodeContextExtension(pi) {
   })
 
   pi.on("session_shutdown", async () => {
+    focusUnsubscribe?.()
+    focusUnsubscribe = undefined
     activeContext = undefined
     await closeServer()
   })
 }
+
+async function enableFocusClaiming(pi, ctx) {
+  if (
+    !ctx.hasUI
+    || focusUnsubscribe !== undefined
+    || !(pi.getFlag("claim-ide-context-on-focus") === true || pi.getPluginSettings?.().claimIdeContextOnFocus === true)
+  ) {
+    return
+  }
+
+  if (typeof ctx.ui?.onTerminalFocusChange !== "function") {
+    ctx.ui.notify("Claim IDE context on focus requires a newer OMP runtime.", "warning")
+    return
+  }
+
+  focusUnsubscribe = ctx.ui.onTerminalFocusChange(async (focused) => {
+    if (focused) {
+      await claimActiveBridge({ force: true })
+    }
+  })
+}
+
 
 async function ensureServer(pi, ctx) {
   if (server !== undefined) {
@@ -240,7 +272,6 @@ async function pasteToPromptEditor(prompt) {
   return true
 }
 
-
 async function claimActiveBridge({ force = false } = {}) {
   if (serverEndpoint === undefined || serverPort === undefined) {
     return false
@@ -310,9 +341,17 @@ async function writeStateFile() {
   await mkdir(join(homedir(), ".omp", "agent"), {
     recursive: true,
   })
-  await writeFile(STATE_FILE, `${JSON.stringify(state, null, 2)}\n`, {
-    mode: 0o600,
-  })
+  const temporaryStateFile = `${STATE_FILE}.${instanceId}.${randomBytes(8).toString("hex")}.tmp`
+  try {
+    await writeFile(temporaryStateFile, `${JSON.stringify(state, null, 2)}\n`, {
+      mode: 0o600,
+    })
+    await rename(temporaryStateFile, STATE_FILE)
+  } finally {
+    await rm(temporaryStateFile, {
+      force: true,
+    })
+  }
 }
 
 async function ensurePackageVersion() {
@@ -346,19 +385,37 @@ async function closeServer() {
 }
 
 async function removeStateFile(closingInstanceId) {
+  const closingStateFile = `${STATE_FILE}.${closingInstanceId}.${randomBytes(8).toString("hex")}.closing`
   try {
-    const stateContent = await readFile(STATE_FILE, "utf8")
-    const state = JSON.parse(stateContent)
-    if (state.instanceId !== closingInstanceId) {
+    if ((await readStateFile())?.instanceId !== closingInstanceId) {
       return
     }
+    await rename(STATE_FILE, closingStateFile)
   } catch {
     return
   }
 
-  await rm(STATE_FILE, {
-    force: true,
-  })
+  let removeClosingStateFile = true
+  try {
+    const closingState = JSON.parse(await readFile(closingStateFile, "utf8"))
+    if (closingState.instanceId !== closingInstanceId) {
+      try {
+        await link(closingStateFile, STATE_FILE)
+      } catch (error) {
+        if (error?.code !== "EEXIST") {
+          removeClosingStateFile = false
+        }
+      }
+    }
+  } catch {
+    return
+  } finally {
+    if (removeClosingStateFile) {
+      await rm(closingStateFile, {
+        force: true,
+      })
+    }
+  }
 }
 
 function sendJson(response, statusCode, body) {

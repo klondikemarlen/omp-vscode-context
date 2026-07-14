@@ -53,7 +53,14 @@
   "omp": {
     "extensions": [
       "./omp/index.js"
-    ]
+    ],
+    "settings": {
+      "claimIdeContextOnFocus": {
+        "type": "boolean",
+        "default": false,
+        "description": "Claim IDE context automatically when this terminal gains focus."
+      }
+    }
   },
   "contributes": {
     "commands": [

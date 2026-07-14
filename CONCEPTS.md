@@ -85,6 +85,10 @@ The VS Code setting `ompContext.endpoint` overrides discovery when needed.
 
 Multiple OMP terminals can run the plugin at the same time. Each terminal listens on a different loopback port. `session_start` keeps an existing live bridge, while `session_switch` and `/ide` explicitly route VS Code context to the current OMP terminal. Use `/ide-status` to show the endpoint and installed plugin version.
 
+### Experimental terminal focus routing
+
+The OMP-side **Claim IDE context on focus** plugin setting and `--claim-ide-context-on-focus` flag are disabled by default. When the runtime exposes terminal-focus reporting and the terminal emits xterm DECSET 1004 focus-in, the focused OMP instance force-claims the same state file. This is capability-based: no terminal-emulator, operating-system, desktop, PID, or VS Code API detection is involved. Focus-out does nothing; unsupported transports retain `/ide` routing.
+
 ## Shortcut semantics
 
 OpenCode documents `Ctrl+Alt+K` / `Cmd+Alt+K` as a file-reference insertion shortcut. Claude Code documents `Alt+K` / `Option+K` as **Insert @-Mention Reference** and also exposes selected text automatically.
