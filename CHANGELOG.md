@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.10
+
+- Isolate the bridge runtime from OMP event registration.
+
 ## 1.6.9
 
 - Group the bridge status command under `/ide status`.
