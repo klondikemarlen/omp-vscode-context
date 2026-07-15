@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.9
+
+- Group the bridge status command under `/ide status`.
+
 ## 1.6.8
 
 - Apply the Linux terminal-focus setting immediately to running OMP sessions.
