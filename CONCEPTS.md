@@ -83,7 +83,7 @@ The VS Code setting `ompContext.endpoint` overrides discovery when needed.
 
 ## Multiple terminals
 
-Multiple OMP terminals can run the plugin at the same time. Each terminal listens on a different loopback port. `session_start` keeps an existing live bridge, while `session_switch` and `/ide` explicitly route VS Code context to the current OMP terminal. Use `/ide-status` to show the endpoint and installed plugin version.
+Multiple OMP terminals can run the plugin at the same time. Each terminal listens on a different loopback port. `session_start` keeps an existing live bridge, while `session_switch` and `/ide` explicitly route VS Code context to the current OMP terminal. Use `/ide status` to show the endpoint and installed plugin version.
 
 ### Experimental Linux terminal focus routing
 

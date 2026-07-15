@@ -112,23 +112,32 @@ async function postContext(state, body) {
 test("OMP bridge accepts authorized context and pastes into editor", async () => {
   await withBridge(BASE_PORT, async ({ commands, handlers, stateFile }) => {
     const pastedPrompts = []
+    const notifications = []
     const packageJson = JSON.parse(await fs.readFile("package.json", "utf8"))
 
-    await handlers.get("session_start")({}, {
+    const context = {
       hasUI: true,
       ui: {
-        notify() {},
+        notify(message, level) {
+          notifications.push({ message, level })
+        },
         async pasteToEditor(prompt) {
           pastedPrompts.push(prompt)
         },
       },
-    })
+    }
+    await handlers.get("session_start")({}, context)
 
     const state = JSON.parse(await fs.readFile(stateFile, "utf8"))
     assert.equal(state.version, packageJson.version)
     assert.equal(typeof state.instanceId, "string")
     assert.equal(commands.has("ide"), true)
-    assert.equal(commands.has("ide-status"), true)
+    assert.equal(commands.has("ide-status"), false)
+    await commands.get("ide").handler(["status"], context)
+    assert.deepEqual(notifications, [{
+      message: `VS Code Context Bridge ${packageJson.version} is listening on ${state.endpoint}.`,
+      level: "info",
+    }])
 
     const response = await postContext(state, {
       prompt: "@src/example.ts#L1C1",

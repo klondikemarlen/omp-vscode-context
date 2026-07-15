@@ -109,7 +109,7 @@ Session start keeps an existing live bridge; session switch claims the current t
 To see the active endpoint and plugin version in a terminal, run:
 
 ```text
-/ide-status
+/ide status
 ```
 
 ### Experimental Linux terminal focus routing

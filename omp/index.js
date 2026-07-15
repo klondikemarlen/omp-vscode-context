@@ -38,20 +38,16 @@ export default function ompVscodeContextExtension(pi) {
 
   pi.registerCommand("ide", {
     description: "Route VS Code editor context to this OMP terminal",
-    handler: async (_args, ctx) => {
+    handler: async (args, ctx) => {
       activeContext = ctx
       await ensureServer(pi, ctx)
+      if (args[0] === "status") {
+        ctx.ui.notify(`VS Code Context Bridge ${packageVersion} is listening on ${serverEndpoint}.`, "info")
+        return
+      }
       if (await claimActiveBridge({ force: true })) {
         ctx.ui.notify(`VS Code context will target this terminal via ${serverEndpoint}.`, "info")
       }
-    },
-  })
-
-  pi.registerCommand("ide-status", {
-    description: "Show VS Code context bridge endpoint and version",
-    handler: async (_args, ctx) => {
-      await ensureServer(pi, ctx)
-      ctx.ui.notify(`VS Code Context Bridge ${packageVersion} is listening on ${serverEndpoint}.`, "info")
     },
   })
 
