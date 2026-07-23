@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.2
+
+- Rename the repository to `omp-send-context` and preserve compatibility-sensitive VS Code and OMP package identifiers.
+
 ## 1.7.1
 
 - Add Selenium WebDriver as a development dependency and document Firefox manual QA and AMO publishing workflows.
