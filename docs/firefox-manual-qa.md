@@ -14,7 +14,7 @@ Use this guide to verify the Firefox GitHub client and its automatic OMP deliver
   omp plugin list
   ```
 
-Confirm `omp-vscode-context@1.7.4` or newer is listed.
+Confirm `omp-send-context@2.0.0` or newer is listed.
 
 - A local checkout with dependencies installed:
 

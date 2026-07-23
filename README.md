@@ -43,20 +43,20 @@ You need both pieces:
 Install or update from Marketplace:
 
 ```bash
-code --install-extension klondikemarlen.omp-vscode-context --force
+code --install-extension klondikemarlen.omp-send-context --force
 ```
 
 If the VS Code CLI is not installed but Devin Desktop is available:
 
 ```bash
-devin-desktop --install-extension klondikemarlen.omp-vscode-context --force
+devin-desktop --install-extension klondikemarlen.omp-send-context --force
 ```
 
 Or use VS Code's Extensions view and search for **OMP Send Context for VS Code**. Marketplace installs normally auto-update with VS Code unless extension auto-update is disabled.
 
 Links:
 
-- Marketplace: https://marketplace.visualstudio.com/items?itemName=klondikemarlen.omp-vscode-context
+- Marketplace: https://marketplace.visualstudio.com/items?itemName=klondikemarlen.omp-send-context
 - Marketplace publisher hub: https://marketplace.visualstudio.com/manage/publishers/klondikemarlen
 - GitHub: https://github.com/klondikemarlen/omp-send-context
 
@@ -152,7 +152,7 @@ To see the active endpoint and plugin version in a terminal, run:
 
 ### Experimental Linux terminal focus routing
 
-On Linux, enable **Claim IDE context on focus** in OMP **Settings → Plugins → omp-vscode-context**, or start OMP with `--claim-ide-context-on-focus`. Both are off by default; `/ide` remains the explicit override. This setting does nothing outside Linux.
+On Linux, enable **Claim IDE context on focus** in OMP **Settings → Plugins → omp-send-context**, or start OMP with `--claim-ide-context-on-focus`. Both are off by default; `/ide` remains the explicit override. This setting does nothing outside Linux.
 
 This feature requires OMP `16.5.1` or newer.
 
@@ -185,7 +185,7 @@ For user-facing feature work, a request to follow the feature release pattern me
 4. Review the diff and run the smallest tests that cover the change.
 5. Merge only after the PR is reviewed and checks pass.
 6. For published changes, merge first, then bump the package version and changelog on `main`.
-7. Publish, then poll the Marketplace (`npx vsce show klondikemarlen.omp-vscode-context --json`) until the new version appears.
+7. Publish, then poll the Marketplace (`npx vsce show klondikemarlen.omp-send-context --json`) until the new version appears.
 8. Reinstall from the remote source and verify the installed version.
 
 ## Publish
