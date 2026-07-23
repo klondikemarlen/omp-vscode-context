@@ -68,6 +68,13 @@ Install the companion OMP extension from GitHub:
 omp plugin install github:klondikemarlen/omp-send-context
 ```
 
+If the old `omp-vscode-context` package is already installed, remove it once before installing from the renamed repository to avoid a package-name resolution loop:
+
+```bash
+omp plugin uninstall omp-vscode-context
+omp plugin install github:klondikemarlen/omp-send-context
+```
+
 `omp install github:klondikemarlen/omp-send-context` also works; `omp plugin install` is clearer because this is an OMP plugin, not the VS Code extension.
 
 Update an already-installed GitHub plugin with the same command:
