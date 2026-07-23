@@ -1,5 +1,10 @@
 # Changelog
 
+
+## 1.7.5
+
+- Mark the legacy VS Code listing as deprecated and show a one-time migration notice for `klondikemarlen.omp-send-context`.
+
 ## 1.7.4
 
 - Document the one-time OMP plugin migration required after the repository rename.

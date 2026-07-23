@@ -18,6 +18,9 @@ const STATE_FILE = path.join(os.homedir(), ".omp", "agent", "editor-context-brid
 const REQUEST_TIMEOUT_MILLISECONDS = 2000
 const DEFAULT_HANDOFF_MAX_BYTES = 20_000
 const DEFAULT_HANDOFF_MAX_DIAGNOSTICS = 20
+const LEGACY_MIGRATION_NOTICE_KEY = "ompContext.legacyMigrationNoticeShown"
+const REPLACEMENT_EXTENSION_URL = "https://marketplace.visualstudio.com/items?itemName=klondikemarlen.omp-send-context"
+
 
 export function activate(context: vscode.ExtensionContext) {
   const insertDisposable = vscode.commands.registerCommand(
@@ -30,6 +33,22 @@ export function activate(context: vscode.ExtensionContext) {
   )
 
   context.subscriptions.push(insertDisposable, handoffDisposable)
+  void showMigrationNotice(context)
+}
+
+async function showMigrationNotice(context: vscode.ExtensionContext) {
+  if (context.globalState.get<boolean>(LEGACY_MIGRATION_NOTICE_KEY) === true) {
+    return
+  }
+
+  const action = await vscode.window.showWarningMessage(
+    "OMP VS Code Context is deprecated. Install Oh My Pi Send Context before 2026-10-21.",
+    "Install replacement",
+  )
+  await context.globalState.update(LEGACY_MIGRATION_NOTICE_KEY, true)
+  if (action === "Install replacement") {
+    await vscode.env.openExternal(vscode.Uri.parse(REPLACEMENT_EXTENSION_URL))
+  }
 }
 
 export function deactivate() {}

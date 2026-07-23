@@ -2,7 +2,7 @@
   "name": "omp-vscode-context",
   "displayName": "OMP Send Context for VS Code",
   "description": "Send VS Code file and selection references to Oh My Pi with Ctrl+Alt+K.",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "publisher": "klondikemarlen",
   "type": "module",
   "license": "MIT",
@@ -38,6 +38,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onStartupFinished",
     "onCommand:ompContext.insertEditorContext",
     "onCommand:ompContext.insertAgentHandoff"
   ],

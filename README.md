@@ -2,6 +2,9 @@
 
 VS Code client plus OMP extension for sending source selections to OMP with `Ctrl+Alt+K`; a Firefox GitHub client is also available under `firefox/`.
 
+> **Legacy listing:** This extension is deprecated. Install [Oh My Pi Send Context](https://marketplace.visualstudio.com/items?itemName=klondikemarlen.omp-send-context) (`klondikemarlen.omp-send-context`) instead. The legacy listing remains available for migration until the 2026-10-21 review.
+
+
 ## What it does
 
 Press `Ctrl+Alt+K` on Linux/Windows or `Cmd+Alt+K` on macOS while a VS Code editor is focused.
