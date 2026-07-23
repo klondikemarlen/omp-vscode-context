@@ -1,0 +1,7 @@
+{
+  "name": "omp_send_context",
+  "description": "OMP Send Context Firefox native messaging host",
+  "path": "/absolute/path/to/omp-send-context-host.mjs",
+  "type": "stdio",
+  "allowed_extensions": ["omp-send-context@klondikemarlen.github.io"]
+}
