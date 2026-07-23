@@ -1,4 +1,4 @@
-import { watch } from "node:fs"
+import { unwatchFile, watch, watchFile } from "node:fs"
 import { readFile } from "node:fs/promises"
 import { dirname, basename, join } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -88,17 +88,28 @@ function watchFocusSettings(pi) {
     return
   }
 
+  const refresh = () => {
+    clearTimeout(focusSettingsRefreshTimer)
+    focusSettingsRefreshTimer = setTimeout(() => {
+      void refreshFocusClaiming(pi)
+    }, 25)
+  }
+
   try {
     focusSettingsWatcher = watch(dirname(PLUGINS_LOCK_FILE), { persistent: false }, (_event, filename) => {
       if (filename !== null && basename(filename.toString()) !== basename(PLUGINS_LOCK_FILE)) {
         return
       }
-      clearTimeout(focusSettingsRefreshTimer)
-      focusSettingsRefreshTimer = setTimeout(() => {
-        void refreshFocusClaiming(pi)
-      }, 25)
+      refresh()
     })
-  } catch {}
+  } catch {
+    watchFile(PLUGINS_LOCK_FILE, { persistent: false, interval: 100 }, refresh)
+    focusSettingsWatcher = {
+      close() {
+        unwatchFile(PLUGINS_LOCK_FILE, refresh)
+      },
+    }
+  }
 }
 
 function stopFocusSettingsWatcher() {
