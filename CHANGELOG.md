@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.4
+
+- Document the one-time OMP plugin migration required after the repository rename.
+
 ## 1.7.3
 
 - Align the README branding with the `omp-send-context` repository name.
