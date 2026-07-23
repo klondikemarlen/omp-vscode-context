@@ -1,6 +1,6 @@
 # Oh My Pi Context Bridge
 
-VS Code extension plus Oh My Pi extension for sending the active editor location to OMP with `Ctrl+Alt+K`.
+VS Code client plus OMP extension for sending source selections to OMP with `Ctrl+Alt+K`; a Firefox GitHub client is also available under `firefox/`.
 
 ## What it does
 
@@ -81,6 +81,32 @@ Then restart OMP or run `/reload-plugins`.
 Supported OMP runtime: `16.3.7` or newer. That release includes upstream OMP [can1357/oh-my-pi#4342](https://github.com/can1357/oh-my-pi/pull/4342), which repaints the prompt after extension `pasteToEditor` / `setEditorText` mutations; older runtimes may still load the plugin but are outside this repo's support floor.
 
 This plugin is installed from the GitHub repo because it ships an OMP runtime extension, while the VS Code half is installed from Marketplace.
+
+### Firefox GitHub client
+
+The Firefox client is a separate WebExtension under `firefox/`. It adds a **Send selection and link to OMP** context-menu action and a configurable `Ctrl+Alt+K` shortcut for GitHub pull-request pages. It sends selected text, the GitHub page/permalink, and the page title as a protocol-v1 context envelope.
+
+For local development, open `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on**, and select `firefox/manifest.json`. Temporary add-ons are removed when Firefox restarts.
+
+The client first tries the native-messaging host. If the host is unavailable, it copies the exact prompt packet to the clipboard; no bridge token is exposed to Firefox.
+
+### Firefox native host
+
+The native host is a separately installed local process. It reads the OMP bridge state from `~/.omp/agent/editor-context-bridge.json`, validates the envelope, and forwards it to the authenticated loopback bridge. Firefox only receives a success or failure response.
+
+On Linux:
+
+```bash
+chmod +x native-host/omp-send-context-host.mjs
+mkdir -p ~/.mozilla/native-messaging-hosts
+cp native-host/omp_send_context.json.example ~/.mozilla/native-messaging-hosts/omp_send_context.json
+sed -i "s#^  \"path\":.*#  \"path\": \"$PWD/native-host/omp-send-context-host.mjs\",#" \
+  ~/.mozilla/native-messaging-hosts/omp_send_context.json
+```
+
+Then reload the temporary Firefox add-on and start OMP. The host manifest allowlists the extension ID `omp-send-context@klondikemarlen.github.io`.
+
+The native host intentionally accepts only `http://127.0.0.1:<port>` bridge endpoints and never logs prompts or bearer tokens.
 
 ### Local development install
 
