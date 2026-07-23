@@ -1,5 +1,6 @@
 browser.runtime.onMessage.addListener((message) => {
   if (message?.type === "capture-context") {
+    reportDebug("capture:start")
     return Promise.resolve(captureContext())
   }
   if (message?.type === "copy-context") {
@@ -13,6 +14,7 @@ browser.runtime.onMessage.addListener((message) => {
 function captureContext() {
   const selection = window.getSelection()
   const anchor = selection?.anchorNode?.parentElement?.closest?.("a[href]")
+  reportDebug(selection?.toString().trim().length > 0 ? "capture:selection-present" : "capture:selection-empty")
   return {
     selectionText: selection?.toString() ?? "",
     linkUrl: anchor?.href,
@@ -24,8 +26,11 @@ function captureContext() {
 async function copyText(text) {
   try {
     await navigator.clipboard.writeText(text)
+    reportDebug("clipboard:api-succeeded")
     return
-  } catch {}
+  } catch {
+    reportDebug("clipboard:api-failed")
+  }
 
   const textarea = document.createElement("textarea")
   textarea.value = text
@@ -33,8 +38,21 @@ async function copyText(text) {
   textarea.style.opacity = "0"
   document.body.append(textarea)
   textarea.select()
-  document.execCommand("copy")
-  textarea.remove()
+  try {
+    if (!document.execCommand("copy")) {
+      throw new Error("Clipboard command returned false.")
+    }
+    reportDebug("clipboard:fallback-succeeded")
+  } catch {
+    reportDebug("clipboard:fallback-failed")
+    throw new Error("Clipboard write failed.")
+  } finally {
+    textarea.remove()
+  }
+}
+
+function reportDebug(event) {
+  void browser.runtime.sendMessage({ type: "debug-event", event }).catch(() => {})
 }
 
 function showNotification(message) {

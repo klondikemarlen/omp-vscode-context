@@ -43,6 +43,9 @@ If the pull request requires authentication, sign in to the temporary profile be
 
 Start a fresh OMP process after the native host is installed. Keep its prompt visible.
 
+To capture diagnostics for this first release, click the add-on toolbar button to enable debug logging. After reproducing a failure, use the GitHub page context menu item **Copy OMP Send Context debug log**. The exported log contains bounded stage/error codes only; it does not contain selected text, URLs, titles, prompts, bridge state, or bearer tokens.
+
+
 ## Test cases
 
 ### 1. Context-menu delivery

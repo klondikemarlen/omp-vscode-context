@@ -93,9 +93,13 @@ This plugin is installed from the GitHub repo because it ships an OMP runtime ex
 
 The Firefox client is a separate WebExtension under `firefox/`. It adds a **Send selection and link to OMP** context-menu action and a configurable `Ctrl+Alt+K` shortcut for GitHub pull-request pages. It sends selected text, the GitHub page/permalink, and the page title as a protocol-v1 context envelope.
 
+For normal distribution, install the signed add-on from its AMO listing once published. The OMP plugin and the Firefox add-on are separate installs; installing the add-on does not install the native-messaging host.
+
 For local development, open `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on**, and select `firefox/manifest.json`. Temporary add-ons are removed when Firefox restarts.
 
-The client first tries the native-messaging host. If the host is unavailable, it copies the exact prompt packet to the clipboard; no bridge token is exposed to Firefox.
+The toolbar button toggles opt-in debug logging. With debug logging enabled, the **Copy OMP Send Context debug log** context-menu action copies bounded stage/error codes only; it never includes selected text, URLs, titles, prompts, bridge state, or bearer tokens.
+
+The client first tries the native-messaging host. If the host is unavailable or rejects delivery, it copies the exact prompt packet to the clipboard; no bridge token is exposed to Firefox.
 
 ### Firefox native host
 
@@ -111,7 +115,7 @@ sed -i "s#^  \"path\":.*#  \"path\": \"$PWD/native-host/omp-send-context-host.mj
   ~/.mozilla/native-messaging-hosts/omp_send_context.json
 ```
 
-Then reload the temporary Firefox add-on and start OMP. The host manifest allowlists the extension ID `omp-send-context@klondikemarlen.github.io`.
+After installing the host, restart Firefox or disable and re-enable the installed add-on, then start OMP. When developing with a temporary add-on, reload it from `about:debugging` instead. The host manifest allowlists the extension ID `omp-send-context@klondikemarlen.github.io`.
 
 The native host intentionally accepts only `http://127.0.0.1:<port>` bridge endpoints and never logs prompts or bearer tokens.
 
