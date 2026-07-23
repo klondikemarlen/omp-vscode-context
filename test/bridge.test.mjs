@@ -23,7 +23,7 @@ async function withBridge(port, run, { flags = {}, pluginSettings = {}, platform
   })
   await fs.writeFile(pluginsLockFile, JSON.stringify({
     settings: {
-      "omp-vscode-context": pluginSettings,
+      "omp-send-context": pluginSettings,
     },
   }))
 
@@ -408,7 +408,7 @@ test("plugin setting changes focus routing in a running Linux session", async ()
     assert.equal(focusHandler, undefined)
     await fs.writeFile(pluginsLockFile, JSON.stringify({
       settings: {
-        "omp-vscode-context": {
+        "omp-send-context": {
           claimIdeContextOnFocus: true,
         },
       },
@@ -418,7 +418,7 @@ test("plugin setting changes focus routing in a running Linux session", async ()
 
     await fs.writeFile(pluginsLockFile, JSON.stringify({
       settings: {
-        "omp-vscode-context": {
+        "omp-send-context": {
           claimIdeContextOnFocus: false,
         },
       },

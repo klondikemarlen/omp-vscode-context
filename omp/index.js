@@ -5,8 +5,7 @@ import { fileURLToPath } from "node:url"
 
 import { createBridgeRuntime } from "./bridge-runtime.js"
 
-// Keep the installed settings key stable while the repository adopts omp-send-context.
-const PLUGIN_NAME = "omp-vscode-context"
+const PLUGIN_NAME = "omp-send-context"
 const PLUGINS_LOCK_FILE = join(process.env.HOME ?? "", ".omp", "plugins", "omp-plugins.lock.json")
 const PACKAGE_FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "package.json")
 
