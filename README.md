@@ -108,6 +108,11 @@ Then reload the temporary Firefox add-on and start OMP. The host manifest allowl
 
 The native host intentionally accepts only `http://127.0.0.1:<port>` bridge endpoints and never logs prompts or bearer tokens.
 
+Maintenance guides:
+
+- [Firefox manual QA](docs/firefox-manual-qa.md)
+- [Firefox publishing](docs/firefox-publishing.md)
+
 ### Local development install
 
 For normal use, install from GitHub as shown above. For development on a local checkout, link the local package so OMP loads your working tree instead of a pinned GitHub commit:
