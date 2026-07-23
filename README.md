@@ -52,7 +52,7 @@ If the VS Code CLI is not installed but Devin Desktop is available:
 devin-desktop --install-extension klondikemarlen.omp-send-context --force
 ```
 
-Or use VS Code's Extensions view and search for **OMP Send Context for VS Code**. Marketplace installs normally auto-update with VS Code unless extension auto-update is disabled.
+Or use VS Code's Extensions view and search for **Oh My Pi Send Context**. Marketplace installs normally auto-update with VS Code unless extension auto-update is disabled.
 
 Links:
 
