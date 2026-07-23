@@ -1,0 +1,43 @@
+{
+  "manifest_version": 2,
+  "name": "OMP Send Context",
+  "version": "0.1.0",
+  "description": "Send selected GitHub pull-request context to Oh My Pi.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "omp-send-context@klondikemarlen.github.io",
+      "strict_min_version": "109.0"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "contextMenus",
+    "nativeMessaging",
+    "https://github.com/*"
+  ],
+  "background": {
+    "scripts": ["context.js", "background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "commands": {
+    "send-context": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+K",
+        "linux": "Ctrl+Alt+K",
+        "windows": "Ctrl+Alt+K",
+        "mac": "Command+Alt+K"
+      },
+      "description": "Send selected GitHub context to OMP"
+    }
+  },
+  "browser_action": {
+    "default_title": "Send GitHub context to OMP"
+  }
+}
