@@ -74,7 +74,7 @@ Do not submit the listed release until the signed XPI passes manual QA.
 For repeatable command-line submission, configure the AMO API credentials through a local secret manager or ignored shell environment variables. Use the names below in `.envrc`; they are local aliases, not AMO-required variable names:
 
 ```bash
-export AMO_API_KEY='your-AMO-issuer'
+export AMO_API_ISSUER='your-AMO-issuer'
 export AMO_API_SECRET='your-AMO-secret'
 ```
 
@@ -85,7 +85,7 @@ npx web-ext sign \
   --source-dir firefox \
   --artifacts-dir dist/firefox \
   --ignore-files 'native-host/**' 'native-host/' \
-  --api-key "$AMO_API_KEY" \
+  --api-key "$AMO_API_ISSUER" \
   --api-secret "$AMO_API_SECRET" \
   --channel listed
 ```
