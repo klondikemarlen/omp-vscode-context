@@ -13,6 +13,7 @@ const args = [
   "--artifacts-dir", "dist/firefox",
   "--ignore-files", "native-host/**", "native-host/",
   "--amo-metadata", "docs/firefox-amo-metadata.json",
+  "--approval-timeout", "0",
   "--channel", "listed",
 ]
 
