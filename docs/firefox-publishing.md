@@ -71,14 +71,22 @@ Do not submit the listed release until the signed XPI passes manual QA.
 5. Keep the stable extension ID unchanged.
 6. Submit for signing/review. Record the AMO add-on URL and submitted version in the release record.
 
-For repeatable command-line submission, configure AMO API credentials through a local secret manager or ignored shell environment variables. Never commit them or create an environment example file:
+For repeatable command-line submission, configure the AMO API credentials through a local secret manager or ignored shell environment variables. Use the names below in `.envrc`; they are local aliases, not AMO-required variable names:
 
 ```bash
-export WEB_EXT_API_KEY='your-local-amo-api-key'
-export WEB_EXT_API_SECRET='your-local-amo-api-secret'
+export AMO_API_KEY='your-AMO-issuer'
+export AMO_API_SECRET='your-AMO-secret'
+```
+
+Submit the listed add-on with:
+
+```bash
 npx web-ext sign \
   --source-dir firefox \
   --artifacts-dir dist/firefox \
+  --ignore-files 'native-host/**' 'native-host/' \
+  --api-key "$AMO_API_KEY" \
+  --api-secret "$AMO_API_SECRET" \
   --channel listed
 ```
 
