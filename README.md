@@ -101,17 +101,17 @@ The toolbar button toggles opt-in debug logging. With debug logging enabled, the
 
 The client first tries the native-messaging host. If the host is unavailable or rejects delivery, it copies the exact prompt packet to the clipboard; no bridge token is exposed to Firefox.
 
-### Firefox native host
+### Firefox native messaging host (Linux setup)
 
-The native host is a separately installed local process. It reads the OMP bridge state from `~/.omp/agent/editor-context-bridge.json`, validates the envelope, and forwards it to the authenticated loopback bridge. Firefox only receives a success or failure response.
+The Firefox native messaging host is a separately installed local process. It reads the OMP bridge state from `~/.omp/agent/editor-context-bridge.json`, validates the envelope, and forwards it to the authenticated loopback bridge. Firefox only receives a success or failure response.
 
 On Linux:
 
 ```bash
-chmod +x native-host/omp-send-context-host.mjs
+chmod +x firefox/native-host/omp-send-context-host.mjs
 mkdir -p ~/.mozilla/native-messaging-hosts
-cp native-host/omp_send_context.json.example ~/.mozilla/native-messaging-hosts/omp_send_context.json
-sed -i "s#^  \"path\":.*#  \"path\": \"$PWD/native-host/omp-send-context-host.mjs\",#" \
+cp firefox/native-host/omp_send_context.json.example ~/.mozilla/native-messaging-hosts/omp_send_context.json
+sed -i "s#^  \"path\":.*#  \"path\": \"$PWD/firefox/native-host/omp-send-context-host.mjs\",#" \
   ~/.mozilla/native-messaging-hosts/omp_send_context.json
 ```
 

@@ -24,7 +24,7 @@ Confirm `omp-send-context@2.0.0` or newer is listed.
   npx web-ext lint --source-dir firefox
   ```
 
-- The native host installed as described in the [README](../README.md#firefox-native-host). Confirm that `~/.mozilla/native-messaging-hosts/omp_send_context.json` points to the executable checkout path and allowlists `omp-send-context@klondikemarlen.github.io`.
+- The Firefox native messaging host (Linux setup currently supported) is installed as described in the [README](../README.md#firefox-native-messaging-host-linux-setup). Confirm that `~/.mozilla/native-messaging-hosts/omp_send_context.json` points to the executable checkout path and allowlists `omp-send-context@klondikemarlen.github.io`.
 
 The `selenium-webdriver` development dependency is available for driver-based browser automation. Selenium Manager obtains a compatible geckodriver when the test environment permits it; these manual steps remain the source of truth for user-visible acceptance.
 

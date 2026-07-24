@@ -6,7 +6,7 @@ import path from "node:path"
 import { spawn } from "node:child_process"
 import { createServer } from "node:http"
 
-import { assertEnvelope, deliverEnvelope, encodeMessage } from "../native-host/omp-send-context-host.mjs"
+import { assertEnvelope, deliverEnvelope, encodeMessage } from "../firefox/native-host/omp-send-context-host.mjs"
 
 async function availableServer(handler) {
   const server = createServer(handler)
@@ -37,7 +37,7 @@ test("native host delivers protocol v1 envelopes with the bridge token", async (
       token: "test-token",
     }))
 
-    const child = spawn(process.execPath, ["native-host/omp-send-context-host.mjs"], {
+    const child = spawn(process.execPath, ["firefox/native-host/omp-send-context-host.mjs"], {
       env: { ...process.env, OMP_CONTEXT_STATE_FILE: stateFile },
       stdio: ["pipe", "pipe", "pipe"],
     })

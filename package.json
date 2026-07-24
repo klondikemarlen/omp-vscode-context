@@ -37,13 +37,9 @@
     "Machine Learning",
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:ompContext.insertEditorContext",
-    "onCommand:ompContext.insertAgentHandoff"
-  ],
   "main": "./dist/extension.cjs",
   "files": [
-    "dist",
+    "dist/extension.cjs",
     "omp",
     "README.md",
     "CONCEPTS.md",

@@ -12,11 +12,11 @@ Official references:
 ## Release boundary
 
 - `firefox/manifest.json` and `firefox/package.json` carry the Firefox client version.
-- `native-host/package.json` carries the native-host version.
+- `firefox/native-host/package.json` carries the Linux Firefox native messaging host version.
 - `package.json` and `package-lock.json` carry the VS Code/OMP package version.
 - `firefox/manifest.json` contains the stable extension ID `omp-send-context@klondikemarlen.github.io`.
-- The native-host manifest must allowlist that exact extension ID. Never change the ID casually; an ID change requires a coordinated native-host manifest update and a new AMO installation path.
-- The native host is not uploaded to AMO. It is installed through the operating system and documented separately.
+- The Linux Firefox native messaging host manifest must allowlist that exact extension ID. Never change the ID casually; an ID change requires a coordinated host manifest update and a new AMO installation path.
+- The Linux native messaging host is not uploaded to AMO. It is installed through the operating system and documented separately.
 
 ## Before publishing
 
@@ -27,7 +27,7 @@ Official references:
    ```bash
    npm install
    npm test
-   npx web-ext lint --source-dir firefox
+   npx web-ext lint --source-dir firefox --ignore-files 'native-host/**' 'native-host/'
    ```
 
 4. Run the [Firefox Manual QA](firefox-manual-qa.md) flow in a fresh Firefox profile. Test cases 1, 2, and 4 must be **PASS**.
@@ -89,10 +89,10 @@ Do not paste credentials into issue, pull-request, or release notes. If AMO requ
 1. Poll the AMO listing until the new version is visible.
 2. In a fresh Firefox profile, install the published AMO add-on rather than the temporary checkout.
 3. Confirm **about:addons** shows the expected extension name and version.
-4. Install the matching native host and verify its manifest still allowlists the stable extension ID.
+4. Install the matching Linux Firefox native messaging host and verify its manifest still allowlists the stable extension ID.
 5. Start a fresh OMP process and run Firefox Manual QA test cases 1, 2, and 4.
-6. Confirm the fallback path still works by temporarily making the native host unavailable.
-7. Record the AMO URL, visible version, Firefox version, OMP version, native-host version, and PASS/FAIL/BLOCKED results.
+6. Confirm the clipboard fallback path still works by temporarily making the Linux Firefox native messaging host unavailable.
+7. Record the AMO URL, visible version, Firefox version, OMP version, Linux native-host version, and PASS/FAIL/BLOCKED results.
 
 ## Rollback
 

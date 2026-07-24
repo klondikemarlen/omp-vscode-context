@@ -1,0 +1,8 @@
+{
+  "name": "omp-send-context-firefox-native-host",
+  "version": "1.7.1",
+  "private": true,
+  "description": "Linux Firefox native messaging host for OMP Send Context.",
+  "license": "MIT",
+  "type": "module"
+}

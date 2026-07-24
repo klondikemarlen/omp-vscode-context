@@ -10,7 +10,7 @@ await mkdir(artifactsDirectory, { recursive: true })
 
 const command = process.platform === "win32" ? "web-ext.cmd" : "web-ext"
 await new Promise((resolve, reject) => {
-  const child = spawn(command, ["build", "--source-dir", "firefox", "--artifacts-dir", artifactsDirectory], {
+  const child = spawn(command, ["build", "--source-dir", "firefox", "--artifacts-dir", artifactsDirectory, "--ignore-files", "native-host/**", "native-host/"], {
     stdio: "inherit",
   })
   child.on("error", reject)

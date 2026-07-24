@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Linux Firefox native messaging host. The protocol code is portable; registration is Linux-only for now.
 import { readFile } from "node:fs/promises"
 import { homedir } from "node:os"
 import { join } from "node:path"
