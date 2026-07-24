@@ -18,6 +18,8 @@
   "categories": {
     "firefox": ["web-development"]
   },
-  "license": "MIT",
+  "version": {
+    "license": "MIT"
+  },
   "is_experimental": true
 }
