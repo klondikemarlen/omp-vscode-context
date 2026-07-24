@@ -142,6 +142,7 @@
     "package": "npm run check-types && node esbuild.js --production",
     "package:vsix": "vsce package",
     "package:firefox": "node scripts/package-firefox.mjs",
+    "sign:firefox": "node scripts/sign-firefox.mjs",
     "publish:marketplace": "vsce publish",
     "test": "npm run check-types && node --import tsx --test test/*.test.ts test/*.test.mjs"
   },

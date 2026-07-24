@@ -81,15 +81,10 @@ export AMO_API_SECRET='your-AMO-secret'
 Submit the listed add-on with:
 
 ```bash
-npx web-ext sign \
-  --source-dir firefox \
-  --artifacts-dir dist/firefox \
-  --ignore-files 'native-host/**' 'native-host/' \
-  --amo-metadata docs/firefox-amo-metadata.json \
-  --api-key "$AMO_API_ISSUER" \
-  --api-secret "$AMO_API_SECRET" \
-  --channel listed
+npm run sign:firefox
 ```
+
+The script reads `AMO_API_ISSUER` and `AMO_API_SECRET`, passes them to web-ext through `WEB_EXT_API_KEY` and `WEB_EXT_API_SECRET`, applies `docs/firefox-amo-metadata.json`, excludes the Linux native-messaging host, and never prints the credentials.
 
 Do not paste credentials into issue, pull-request, or release notes. If AMO requires human review, the release remains pending until AMO reports the signed/public result.
 
