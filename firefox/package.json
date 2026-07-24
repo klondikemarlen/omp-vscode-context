@@ -1,7 +1,7 @@
 {
   "name": "omp-send-context-firefox",
   "displayName": "OMP Send Context for Firefox",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "private": true,
   "description": "Send selected GitHub pull-request context to Oh My Pi.",
   "license": "MIT"

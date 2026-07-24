@@ -4,6 +4,7 @@ import fs from "node:fs/promises"
 import vm from "node:vm"
 
 const contextSource = await fs.readFile(new URL("../firefox/context.js", import.meta.url), "utf8")
+const manifest = JSON.parse(await fs.readFile(new URL("../firefox/manifest.json", import.meta.url), "utf8"))
 const context = { URL }
 vm.runInNewContext(contextSource, context)
 const { createEnvelope, formatPrompt, isSupportedGithubUrl } = context.ompSendContext
@@ -12,6 +13,11 @@ test("Firefox client recognizes GitHub pull-request pages", () => {
   assert.equal(isSupportedGithubUrl("https://github.com/org/repo/pull/42/files"), true)
   assert.equal(isSupportedGithubUrl("https://github.com/org/repo/issues/42"), false)
   assert.equal(isSupportedGithubUrl("https://evil.example/github.com/org/repo/pull/42"), false)
+})
+
+test("Firefox manifest scopes page access to GitHub pull-request paths", () => {
+  assert.deepEqual(manifest.permissions.at(-1), "https://github.com/*/*/pull/*")
+  assert.deepEqual(manifest.content_scripts[0].matches, ["https://github.com/*/*/pull/*"])
 })
 
 test("Firefox client creates a protocol v1 envelope with permalink metadata", () => {

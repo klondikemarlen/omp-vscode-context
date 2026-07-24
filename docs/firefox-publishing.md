@@ -85,6 +85,7 @@ npx web-ext sign \
   --source-dir firefox \
   --artifacts-dir dist/firefox \
   --ignore-files 'native-host/**' 'native-host/' \
+  --amo-metadata docs/firefox-amo-metadata.json \
   --api-key "$AMO_API_ISSUER" \
   --api-secret "$AMO_API_SECRET" \
   --channel listed

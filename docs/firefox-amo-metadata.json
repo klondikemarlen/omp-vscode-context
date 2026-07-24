@@ -1,0 +1,23 @@
+{
+  "default_locale": "en-US",
+  "name": {
+    "en-US": "OMP Send Context"
+  },
+  "summary": {
+    "en-US": "Experimental Firefox client for sending selected GitHub pull-request context to Oh My Pi."
+  },
+  "description": {
+    "en-US": "OMP Send Context is an experimental Firefox add-on under active development. It may not work correctly in every GitHub pull-request view or Firefox environment.\n\nThe add-on adds a keyboard shortcut and context-menu action for GitHub pull-request pages. Select code and press Ctrl+Alt+K on Linux or Windows, or Command+Alt+K on macOS. You can also right-click the selection and choose Send selection and link to OMP.\n\nThe add-on attempts to send selected text, GitHub page or permalink, and page title to a local Oh My Pi session through Firefox native messaging. If the optional Linux native-messaging host is unavailable, it falls back to copying the context packet to the clipboard.\n\nThis first release intentionally includes extensive opt-in debugging. The toolbar button enables debug logging, and the GitHub context menu can copy a bounded diagnostic log. Debug logs contain stage and error codes only; they do not contain selected text, URLs, titles, prompts, bridge state, or bearer tokens.\n\nNo telemetry or remote data service is used. The companion OMP plugin and Linux native-messaging host are separate installations."
+  },
+  "developer_comments": {
+    "en-US": "This add-on is an experimental first release under active development and may not work correctly in every GitHub or Firefox environment. It intentionally includes extensive opt-in debugging to make early failures diagnosable. Debug output is limited to bounded stage and error codes and does not contain selected text, URLs, titles, prompts, bridge state, or bearer tokens.\n\nSource: https://github.com/klondikemarlen/omp-send-context\nBuild: npm install && npm run package:firefox\nThe Firefox package excludes firefox/native-host/**. The Linux native-messaging host is separate and is not bundled."
+  },
+  "homepage": {
+    "en-US": "https://github.com/klondikemarlen/omp-send-context"
+  },
+  "categories": {
+    "firefox": ["web-development"]
+  },
+  "license": "MIT",
+  "is_experimental": true
+}

@@ -1,4 +1,5 @@
 const NATIVE_HOST_NAME = "omp_send_context"
+const GITHUB_PR_URL_PATTERN = "https://github.com/*/*/pull/*"
 const MENU_ID = "omp-send-context"
 const DEBUG_MENU_ID = "omp-send-context-debug"
 const DEBUG_STORAGE_KEY = "debugLogging"
@@ -11,13 +12,13 @@ browser.runtime.onInstalled.addListener(() => {
     id: MENU_ID,
     title: "Send selection and link to OMP",
     contexts: ["selection", "link"],
-    documentUrlPatterns: ["https://github.com/*"],
+    documentUrlPatterns: [GITHUB_PR_URL_PATTERN],
   })
   browser.menus.create({
     id: DEBUG_MENU_ID,
     title: "Copy OMP Send Context debug log",
     contexts: ["all"],
-    documentUrlPatterns: ["https://github.com/*"],
+    documentUrlPatterns: [GITHUB_PR_URL_PATTERN],
   })
 })
 
@@ -69,6 +70,10 @@ async function sendActiveContext() {
   const [tab] = await browser.tabs.query({ active: true, currentWindow: true })
   if (tab?.id === undefined) {
     await recordDebug("shortcut:no-active-tab")
+    return
+  }
+  if (!ompSendContext.isSupportedGithubUrl(tab.url ?? "")) {
+    await recordDebug("shortcut:unsupported-page")
     return
   }
 

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "OMP Send Context",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "Send selected GitHub pull-request context to Oh My Pi.",
   "browser_specific_settings": {
     "gecko": {
@@ -19,14 +19,14 @@
     "contextMenus",
     "nativeMessaging",
     "storage",
-    "https://github.com/*"
+    "https://github.com/*/*/pull/*"
   ],
   "background": {
     "scripts": ["context.js", "background.js"]
   },
   "content_scripts": [
     {
-      "matches": ["https://github.com/*"],
+      "matches": ["https://github.com/*/*/pull/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }

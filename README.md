@@ -91,6 +91,9 @@ This plugin is installed from the GitHub repo because it ships an OMP runtime ex
 
 ### Firefox GitHub client
 
+> **Experimental:** The Firefox client is under active development and may not work in every GitHub pull-request view or Firefox environment. It includes opt-in, redacted debug logging to help diagnose first-release failures.
+
+
 The Firefox client is a separate WebExtension under `firefox/`. It adds a **Send selection and link to OMP** context-menu action and a configurable `Ctrl+Alt+K` shortcut for GitHub pull-request pages. It sends selected text, the GitHub page/permalink, and the page title as a protocol-v1 context envelope.
 
 For normal distribution, install the signed add-on from its AMO listing once published. The OMP plugin and the Firefox add-on are separate installs; installing the add-on does not install the native-messaging host.

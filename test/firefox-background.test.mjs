@@ -17,7 +17,7 @@ function event() {
   }
 }
 
-async function runFlow(nativeResponse) {
+async function runFlow(nativeResponse, { pageUrl = "https://github.com/org/repo/pull/42/files" } = {}) {
   const events = {
     installed: event(),
     menuClicked: event(),
@@ -57,14 +57,14 @@ async function runFlow(nativeResponse) {
     },
     tabs: {
       async query() {
-        return [{ id: 42 }]
+        return [{ id: 42, url: pageUrl }]
       },
       async sendMessage(_tabId, message) {
         messages.push(message)
         if (message.type === "capture-context") {
           return {
             selectionText: "const value = 1",
-            pageUrl: "https://github.com/org/repo/pull/42/files",
+            pageUrl,
             title: "Test pull request",
           }
         }
@@ -77,6 +77,7 @@ async function runFlow(nativeResponse) {
     browser,
     console: { info: (...args) => logs.push(args.join(" ")) },
     ompSendContext: {
+      isSupportedGithubUrl: value => value.includes("/pull/"),
       createEnvelope(capture) {
         return { prompt: `selected:${capture.selectionText}` }
       },
@@ -104,4 +105,13 @@ test("Firefox client does not fall back after native delivery succeeds", async (
 
   assert.ok(result.logs.some(entry => entry.includes("native:succeeded")))
   assert.equal(result.messages.some(message => message.type === "copy-context"), false)
+})
+
+test("Firefox client ignores non-pull-request pages", async () => {
+  const result = await runFlow({ ok: true }, {
+    pageUrl: "https://github.com/org/repo/issues/42",
+  })
+
+  assert.equal(result.messages.some(message => message.type === "capture-context"), false)
+  assert.ok(result.logs.some(entry => entry.includes("shortcut:unsupported-page")))
 })
